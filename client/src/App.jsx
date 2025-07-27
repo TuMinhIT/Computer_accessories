@@ -1,12 +1,21 @@
 import { assets } from "./assets/frontend-assets/assets";
+import Login from "./pages/Login";
 
 function App() {
+  // header
+  //navbar
+  // router -- main
+  // footer
+
   return (
-    <div className="bg-gray-700 h-screen text-white text-4xl  flex flex-row">
-      <img className="w-1/2 rounded-4xl" src={assets.background} alt="" />
-      <div className=" flex m-auto">hello Hoang Anh Gảy</div>
-    </div>
+    <>
+      <div className="bg-red-300 text-4xl">
+        <img src={assets.char1} alt="" />
+      </div>
+    </>
   );
+
+  // <Login />;
 }
 
 export default App;
