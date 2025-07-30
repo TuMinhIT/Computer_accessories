@@ -1,16 +1,14 @@
-import React from 'react';
-import Product from './Product';
+import Banner from "../components/home/Banner";
 
+import Bestseller from "../components/home/Bestseller";
 function Home() {
   return (
-    <div className="bg-gray-50 min-h-screen py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-indigo-700 mb-8 text-center">
-          Welcome to Our Store
-        </h1>
-        <Product />
+    <>
+      <div className=" mx-5 md:mx-20 sm:mx-15 p-3 flex-col">
+        <Banner />
+        <Bestseller />
       </div>
-    </div>
+    </>
   );
 }
 

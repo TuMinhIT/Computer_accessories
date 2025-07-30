@@ -1,1 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Prata&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
 @import "tailwindcss";
+
+.prata-regular {
+  font-family: "Prata", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* // Tông chủ đạo
+bg-gray-100 // Nền
+text-gray-900 // Văn bản
+
+// Màu nhấn
+bg-blue-600 hover:bg-blue-700 text-white // Nút mua
+
+// Màu phụ
+bg-white shadow-md // Thẻ sản phẩm
+text-red-500 // Giá giảm
+text-green-500 // "Còn hàng" */
