@@ -1,75 +1,29 @@
-import mongoose from "mongoose";
-// id	UUID
-// name	String
-// barcode	String
-// category	String
-// brand	String
-// price	Decimal giá bán
-// cost	Decimal  gía gốc
-// stock	Int tồn kho
-// warrantyMonths	Int //tháng bảo hành
-// imageUrl	String[]
-///bestseller bôlean
-// createdAt	DateTime
-// updatedAt	DateTime
+import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  discription: {
-    type: String,
-    required: true,
-  },
-  barcode: {
-    type: String,
-    required: true,
-  },
-  category: {
-    type: String,
-    required: true,
-  },
-  brand: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  cost: {
-    type: Number,
-    required: true,
-  },
-  stock: {
-    type: Number,
-    required: true,
-  },
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  barcode: { type: String, required: true, unique: true },
 
-  image: {
-    type: [String],
-    required: true,
-  },
-  category: {
-    type: String,
-    required: true,
-  },
-  warrantyMonths: {
-    type: Number,
-  },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory', required: true },
 
-  bestseller: {
-    type: Boolean,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    required: true,
-  },
+
+  brand: { type: String, required: true },
+  price: { type: Number, required: true },
+  cost: { type: Number, required: true },
+  stock: { type: Number, required: true },
+  warrantyMonths: { type: Number },
+  imageUrl: { type: [String], required: true },
+  bestseller: { type: Boolean, required: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
-const productModel =
-  mongoose.models.producst || mongoose.model("products", productSchema);
+productSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
 
-export default productModel;
+const Product = mongoose.model('Product', productSchema);
+export default Product;
