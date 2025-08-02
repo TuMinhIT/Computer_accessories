@@ -60,11 +60,17 @@ const Header = () => {
           </nav>
         </div>
 
-        <div className="flex">
-          <div className="p-2 mr-5">
-            <img className="w-8  h-8" src={assets.shopping_cart} alt="" />
-          </div>
-          <div className="p-2  mr-5 relative " ref={dropdownRef}>
+        <div className="flex items-center">
+          <Link
+            to={"/cart"}
+            className="p-2 mr-5 m-2 hover:bg-blue-700  rounded-full"
+          >
+            <img className="w-8 h-8 " src={assets.shopping_cart} alt="" />
+          </Link>
+          <div
+            className="mr-5 p-1 relative hover:bg-blue-700  rounded-full"
+            ref={dropdownRef}
+          >
             <img
               onClick={() => setShowDropdown(!showDropdown)}
               className="w-10 rounded-full  h-10"
