@@ -1,6 +1,43 @@
-import { assets } from "../assets/assets";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const username = email.split("@")[0];
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/users/login", {
+        username,
+        password,
+      });
+
+      const { token, role } = res.data;
+
+      if (role === "admin") {
+        localStorage.setItem("adminToken", token);
+        navigate("/dashboard");
+      } else if (role === "staff") {
+        localStorage.setItem("staffToken", token);
+        navigate("/staff-home");
+      }
+
+    } catch (error) {
+      const msg = error.response?.data?.message;
+      if (msg === "Please change password before accessing system") {
+        localStorage.setItem("pendingUsername", username);
+        navigate("/change-password");
+      } else {
+        alert(msg || "Login failed");
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl mx-auto">
@@ -18,7 +55,7 @@ const LoginPage = () => {
                   </p>
                 </div>
 
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleLogin}>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Email Address
@@ -26,6 +63,8 @@ const LoginPage = () => {
                     <input
                       type="email"
                       placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                     />
                   </div>
@@ -37,26 +76,10 @@ const LoginPage = () => {
                     <input
                       type="password"
                       placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                     />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <span className="ml-2 text-sm text-gray-600">
-                        Remember me
-                      </span>
-                    </label>
-                    <a
-                      href="#"
-                      className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                      Forgot password?
-                    </a>
                   </div>
 
                   <button
@@ -66,18 +89,6 @@ const LoginPage = () => {
                     Sign In
                   </button>
                 </form>
-
-                <div className="mt-8 text-center">
-                  <p className="text-gray-600">
-                    Don't have an account?{" "}
-                    <a
-                      href="../pages/sign-up.html"
-                      className="text-blue-600 hover:text-blue-800 font-semibold"
-                    >
-                      Sign up here
-                    </a>
-                  </p>
-                </div>
               </div>
             </div>
 
@@ -86,7 +97,7 @@ const LoginPage = () => {
               <div className="text-center text-white">
                 <img
                   className="rounded-2xl w-full max-w-md mx-auto shadow-2xl mb-6"
-                  src={assets.background1}
+                  src="https://via.placeholder.com/400x300"
                   alt="Login illustration"
                 />
                 <h2 className="text-2xl font-bold mb-4">Join Our Community</h2>

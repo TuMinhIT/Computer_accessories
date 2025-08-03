@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 const Sidebar = () => {
   return (
     <div>
@@ -69,12 +70,9 @@ const Sidebar = () => {
             </li>
             {/* management employees */}
             <li>
-              <Link
-                to={"/employees"}
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
-              >
+              <Link to={"/create-staff"} className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
                 <svg
-                  className="shrink-0 w-5 h-5 text-gray-500 transition duration-75  group-hover:text-gray-900 "
+                  className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
@@ -84,6 +82,7 @@ const Sidebar = () => {
                 </svg>
                 <span className="flex-1 ms-3 whitespace-nowrap">Employees</span>
               </Link>
+
             </li>
             <li>
               <Link
@@ -122,12 +121,15 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
-              <Link
-                to={"/login"}
-                className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 group"
+              <button
+                onClick={() => {
+                  localStorage.removeItem("adminToken");
+                  window.location.href = "/";
+                }}
+                className="flex items-center w-full p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <svg
-                  className="shrink-0 w-5 h-5 text-gray-500 transition duration-75  group-hover:text-gray-900 "
+                  className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -142,8 +144,9 @@ const Sidebar = () => {
                   />
                 </svg>
                 <span className="flex-1 ms-3 whitespace-nowrap">Sign out</span>
-              </Link>
+              </button>
             </li>
+
           </ul>
         </div>
       </aside>

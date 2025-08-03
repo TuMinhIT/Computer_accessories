@@ -1,11 +1,22 @@
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import ChangePassword from "./pages/ChangePassword";
+import CreateStaff from "./pages/CreateStaff";
+import StaffHomepage from "./pages/StaffHomepage";
 import DashboardLayout from "./pages/DashboardLayout";
 
-function App() {
+export default function App() {
   return (
-    <>
-      <DashboardLayout />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/create-staff" element={<CreateStaff />} />
+        <Route path="/staff-home" element={<StaffHomepage />} />
+        <Route path="/dashboard/*" element={<DashboardLayout />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App;

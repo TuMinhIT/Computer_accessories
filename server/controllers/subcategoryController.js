@@ -9,7 +9,11 @@ export const createSubcategory = async (req, res) => {
     try {
         const subcategory = new Subcategory(req.body);
         const saved = await subcategory.save();
-        res.status(201).json(saved);
+        res.send({
+            success: true,
+            message: "Products fetched successfully",
+            //   data: products,
+        });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
