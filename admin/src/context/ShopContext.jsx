@@ -3,9 +3,10 @@ import { createContext } from "react";
 export const ShopContext = createContext();
 
 const ShopContextProvider = ({ children }) => {
-  const dd = 144;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   const value = {
-    dd,
+    backendUrl,
   };
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 };

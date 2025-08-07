@@ -3,37 +3,43 @@ import Footer from "../component/Footer";
 import Header from "../component/Header";
 import Routers from "../routers";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="">
-        <Header toggleSidebar={toggleSidebar} />
-      </div>
-
-      <div className="flex">
-        {/* desktop */}
-        <div className="hidden lg:block w-64  shadow-lg border-r border-gray-200 ">
+    <div className="min-h-screen flex flex-col bg-gray-50 ">
+      <Header toggleSidebar={toggleSidebar} />
+      <ToastContainer />
+      <div className="flex flex-1 min-h-0">
+        {/* Sidebar desktop */}
+        <aside className="hidden lg:block w-64 bg-white border-r border-blue-100 shadow-lg rounded-r-2xl">
           <Sidebar />
-        </div>
-        {/* mobi */}
+        </aside>
+
         {sidebarOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden">
-            <div onClick={() => setSidebarOpen(false)}>
-              <Sidebar />
-            </div>
+          <div className="fixed inset-0 z-10 flex lg:hidden">
+            <div
+              className="absolute inset-0 bg-black/30"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <aside className="relative w-64 ">
+              <Sidebar toggleSidebar={toggleSidebar} />
+            </aside>
           </div>
         )}
-        <div className="flex flex-col w-full bg-gray-100">
-          <div className="flex flex-col my-5 mx-5 md:mx-10 lg:mx-20">
+
+        {/* Main content */}
+        <main className="flex-1 flex flex-col min-w-0 bg-gray-100">
+          <div className="flex-1 flex flex-col px-20 py-4 ">
             <Routers />
           </div>
-          <Footer />
-        </div>
+        </main>
       </div>
+
+      <Footer />
     </div>
   );
 };

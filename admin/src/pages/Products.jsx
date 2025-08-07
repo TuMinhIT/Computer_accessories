@@ -1,154 +1,133 @@
+import { useEffect, useState } from "react";
+import { assets, productImages } from "../assets/assets";
+import Search from "../component/Search";
+import ProductLine from "../component/products/ProductLine";
+import AddProduct from "../component/products/AddProduct";
+import ProductDetail from "../component/products/ProductDetail";
+
 const Products = () => {
-  const products = [
+  const MoocProducts = [
     {
       id: 1,
       name: "iPhone 15 Pro",
-      category: "Electronics",
-      price: "$999",
-      stock: 25,
-      status: "Active",
+      description:
+        "iPhone 15 Pro is the latest flagship smartphone from Apple.",
+      barcode: "1234567890",
+      category: "Phone",
+      brand: "Apple",
+      price: 1000,
+      cost: 800,
+      stock: 10,
+      warrantyMonths: 12,
+      imageUrl: [productImages.screen1, productImages.screen2],
+      bestseller: false,
+      createdAt: "2024-01-15",
     },
     {
       id: 2,
-      name: "MacBook Air",
-      category: "Electronics",
-      price: "$1299",
-      stock: 15,
-      status: "Active",
+      name: "iPhone 14 Pro",
+      description:
+        "iPhone 15 Pro is the latest flagship smartphone from Apple.",
+      barcode: "1234567890",
+      category: "xPhone",
+      brand: "Axxpple",
+      price: 1000,
+      cost: 800,
+      stock: 10,
+      warrantyMonths: 12,
+      imageUrl: [productImages.screen3, productImages.screen2],
+      bestseller: true,
+      color: "blue",
+      createdAt: "2024-01-15",
     },
     {
       id: 3,
-      name: "AirPods Pro",
-      category: "Accessories",
-      price: "$249",
-      stock: 50,
-      status: "Active",
+      name: "iPhone 14 Pro",
+      description:
+        "iPhone 15 Pro is the latest flagship smartphone from Apple.",
+      barcode: "1234567890",
+      category: "xPhone",
+      brand: "Axxpple",
+      price: 1000,
+      cost: 800,
+      stock: 10,
+      warrantyMonths: 12,
+      imageUrl: [productImages.screen4, productImages.screen2],
+      bestseller: true,
+      createdAt: "2024-01-15",
+      color: "blue",
+    },
+    {
+      id: 4,
+      name: "iPhone 14 Pro",
+      description:
+        "iPhone 15 Pro is the latest flagship smartphone from Apple.",
+      barcode: "1234567890",
+      category: "xPhone",
+      brand: "Axxpple",
+      price: 1000,
+      cost: 800,
+      stock: 10,
+      warrantyMonths: 12,
+      imageUrl: [productImages.screen4, productImages.screen2],
+      color: "blue",
+      bestseller: true,
+      createdAt: "2024-01-15",
     },
   ];
 
-  return (
-    <div>
-      <div className="bg-white rounded-xl shadow-sm border">
-        <div className="p-6 border-b flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Products Management
-          </h3>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            + Add Product
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Product
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Stock
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {product.name}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {product.category}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {product.price}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {product.stock}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                      {product.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm space-x-2">
-                    <button className="text-blue-600 hover:text-blue-800">
-                      Edit
-                    </button>
-                    <button className="text-red-600 hover:text-red-800">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div className="bg-white rounded-xl shadow-sm border">
-        <div className="p-6 border-b flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Category Management
-          </h3>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            + Add Product
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Product
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Price
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {product.name}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {product.category}
-                  </td>
+  const [products, setProducts] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [search, setSearch] = useState("");
 
-                  <td className="px-6 py-4">
-                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                      {product.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm space-x-2">
-                    <button className="text-blue-600 hover:text-blue-800">
-                      Edit
-                    </button>
-                    <button className="text-red-600 hover:text-red-800">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  useEffect(() => {
+    setProducts(MoocProducts);
+  }, []);
+
+  useEffect(() => {
+    handleSearch();
+  }, [search]);
+
+  const handleSearch = () => {
+    // TODO: call api search
+    setProducts(
+      MoocProducts.filter((product) =>
+        product.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+      )
+    );
+  };
+
+  return (
+    <>
+      {showAddModal && <AddProduct setShowAddModal={setShowAddModal} />}
+
+      <div className="bg-white rounded-xl shadow-sm border ">
+        <div className="p-6 border-b flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-gray-900">Products</h3>
+
+          <Search
+            search={search}
+            setSearch={setSearch}
+            handleSearch={handleSearch}
+          />
+
+          <button
+            onClick={() => {
+              setShowAddModal(true);
+            }}
+            className="bg-gray-100 text-black px-4 py-2 border border-gray-500 rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            + New
+          </button>
+        </div>
+        <div className="overflow-x-auto h-screen">
+          {products.map((product) => (
+            <ProductLine key={product.id} product={product} />
+          ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -10,7 +10,9 @@ import search from "./search.png";
 import close from "./close.png";
 import logo_bg from "./logo_bg.png";
 import density_medium from "./density_medium.png";
-
+import loginBg from "./loginBg.jpg";
+import more_vert from "./more_vert.png";
+import arrow_back from "./arrow_back.png";
 export const assets = {
   logo,
   logo_bg,
@@ -24,4 +26,18 @@ export const assets = {
   search,
   close,
   density_medium,
+  loginBg,
+  more_vert,
+  arrow_back,
+};
+
+import screen1 from "./producstImage/screen1.webp";
+import screen2 from "./producstImage/screen2.webp";
+import screen3 from "./producstImage/screen3.webp";
+import screen4 from "./producstImage/screen4.webp";
+export const productImages = {
+  screen1,
+  screen2,
+  screen3,
+  screen4,
 };
