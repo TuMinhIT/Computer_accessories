@@ -17,7 +17,7 @@ function App() {
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        <Header />
+        {/* <Header />
         <ToastContainer
           position="top-right"
           autoClose={2000}
@@ -29,11 +29,11 @@ function App() {
           draggable
           pauseOnHover
           theme="light"
-        />
+        /> */}
 
         <Routers />
 
-        <Footer />
+        {/* <Footer /> */}
       </div>
 
       <div>
