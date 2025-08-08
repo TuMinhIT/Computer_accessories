@@ -8,6 +8,7 @@ import subcategoryRoutes from "./routers/subcategoryRoutes.js";
 import userRoutes from "./routers/userRoutes.js";
 import connectCloudinary from "./config/cloudinary.js";
 import { createDefaultAdmin } from "./controllers/userController.js";
+import customerRouter from "./routers/customerRouter.js";
 import cors from "cors";
 
 dotenv.config();
