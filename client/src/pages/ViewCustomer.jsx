@@ -49,7 +49,6 @@ export default function ViewCustomer() {
                                 <li key={index}>
                                     <p><strong>Ngày:</strong> {new Date(order.createdAt).toLocaleString()}</p>
                                     <p><strong>Tổng tiền:</strong> {order.totalAmount} VND</p>
-                                    {/* Có thể hiển thị chi tiết sản phẩm nếu bạn muốn */}
                                 </li>
                             ))}
                         </ul>
