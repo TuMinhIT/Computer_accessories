@@ -2,13 +2,23 @@ import Sidebar from "../component/Sidebar";
 import Footer from "../component/Footer";
 import Header from "../component/Header";
 import Routers from "../routers";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import ClipLoader from "react-spinners/ClipLoader";
+import { ShopContext } from "../context/ShopContext";
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  // {
+  //   loading && (
+  //     <div className=" bg-black/30 z-30 fixed w-full h-full inset-0 flex items-center justify-center">
+  //       <ClipLoader color="#3b82f6" loading={true} size={50} />
+  //     </div>
+  //   );
+  // }
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 ">
       <Header toggleSidebar={toggleSidebar} />

@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { assets, productImages } from "../assets/assets";
 import Search from "../component/Search";
 import ProductLine from "../component/products/ProductLine";
 import AddProduct from "../component/products/AddProduct";
 import ProductDetail from "../component/products/ProductDetail";
-
+import { ProductsService } from "../services/productsService";
+import { ShopContext } from "../context/ShopContext";
+import CustomLoader from "../component/CustomLoader";
 const Products = () => {
   const MoocProducts = [
     {
@@ -75,14 +77,23 @@ const Products = () => {
       createdAt: "2024-01-15",
     },
   ];
+  const { getAllProducts } = ProductsService();
 
   const [products, setProducts] = useState([]);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(true);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    setProducts(MoocProducts);
+    const fetchProducts = async () => {
+      // const productss = await getAllProducts();
+      // console.log(productss);
+    };
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    // setProducts(MoocProducts);
   }, []);
 
   useEffect(() => {
@@ -100,8 +111,8 @@ const Products = () => {
 
   return (
     <>
+      <CustomLoader />
       {showAddModal && <AddProduct setShowAddModal={setShowAddModal} />}
-
       <div className="bg-white rounded-xl shadow-sm border ">
         <div className="p-6 border-b flex justify-between items-center">
           <h3 className="text-lg font-semibold text-gray-900">Products</h3>

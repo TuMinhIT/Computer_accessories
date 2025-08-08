@@ -8,6 +8,7 @@ import Inbox from "./pages/Inbox";
 import ProfilePage from "./pages/ProfilePage";
 import Customers from "./pages/Customers";
 import LoginPage from "./pages/LoginPage";
+import CategoriesAndBrand from "./pages/CategoriesAndBrand";
 const Routers = () => {
   return (
     <>
@@ -17,6 +18,7 @@ const Routers = () => {
         <Route path="/products" element={<Products />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/inbox" element={<Inbox />} />
+        <Route path="/categories" element={<CategoriesAndBrand />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/customers" element={<Customers />} />
       </Routes>
