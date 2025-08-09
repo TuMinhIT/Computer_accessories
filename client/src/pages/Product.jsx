@@ -784,15 +784,10 @@
 
 // export default Product;
 
-
-import ProductManager from "../components/ProductManager";
+// import ProductManager from "../components/ProductManager";
 
 function Product() {
-  return (
-    <div>
-      <ProductManager />
-    </div>
-  );
+  return <div>{/* <ProductManager /> */}</div>;
 }
 
 export default Product;

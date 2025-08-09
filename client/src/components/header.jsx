@@ -67,6 +67,14 @@ const Header = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-3">
+            {/* customer and sale */}
+            <Link
+              to="/sales"
+              className="p-2 hover:bg-indigo-600 rounded-full transition-colors duration-200 relative"
+            >
+              <img className="w-6 h-6" src={assets.sell} alt="Sell" />
+              {/* Cart badge */}
+            </Link>
             {/* Cart */}
             <Link
               to="/cart"

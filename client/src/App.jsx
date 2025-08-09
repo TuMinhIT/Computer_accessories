@@ -13,11 +13,11 @@ import { useContext } from "react";
 import Routers from "./routers";
 function App() {
   const { dd } = useContext(ShopContext);
-  console.log(dd);
+
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        {/* <Header />
+        <Header />
         <ToastContainer
           position="top-right"
           autoClose={2000}
@@ -29,16 +29,12 @@ function App() {
           draggable
           pauseOnHover
           theme="light"
-        /> */}
-
+        />{" "}
         <Routers />
-
-        {/* <Footer /> */}
+        <Footer />
       </div>
 
       <div>
-        <h1>Quản lý Sản phẩm</h1>
-
         {/* {/* <ProductList /> */}
         {/* <Login /> */}
       </div>
