@@ -1,47 +1,139 @@
 import Brands from "../models/BrandModel.js";
-
+import { v2 as cloudinary } from "cloudinary";
 export const getBrands = async (req, res) => {
-  const brands = await Brands.find();
-  if (brands.length === 0) {
-    res.send({
-      success: false,
-      message: "No brands found",
-      data: [],
-    });
-  } else {
+  try {
+    const brands = await Brands.find();
     res.send({
       success: true,
       data: brands,
     });
+  } catch (err) {
+    res.send({
+      success: false,
+      message: err.message,
+    });
+    console.log(err.message);
   }
 };
 
 export const createBrand = async (req, res) => {
   try {
-    const brand = new Brands(req.body);
+    const { name, description } = req.body;
+    const existingBrand = await Brands.findOne({ name });
+    if (existingBrand) {
+      return res.send({
+        success: false,
+        message: "Brand already exists",
+      });
+    }
+
+    if (!req.file || !req.file.path) {
+      return res.send({
+        success: false,
+        message: "Image is required",
+      });
+    }
+    let imageUpload = await cloudinary.uploader.upload(req.file.path, {
+      resource_type: "image",
+      folder: "e-commerce",
+    });
+    const image = imageUpload.secure_url;
+
+    const brand = new Brands({ name, description, image });
     const saved = await brand.save();
-    res.status(201).json(saved);
+    res.send({
+      success: true,
+      data: saved,
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.log(err);
+    res.status(400).json({
+      success: false,
+      message: "Failed to create brand  " + err.message,
+    });
   }
 };
 
 export const updateBrand = async (req, res) => {
   try {
-    const updated = await Brands.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    res.json(updated);
+    const { name, description } = req.body;
+    const brand = await Brands.findById(req.params.id);
+    if (!brand) {
+      return res.send({ success: false, message: "Brand not found" });
+    }
+
+    // Nếu đổi tên, kiểm tra trùng tên với brand khác
+    if (name && name !== brand.name) {
+      const existingBrand = await Brands.findOne({ name });
+      if (existingBrand && existingBrand._id.toString() !== req.params.id) {
+        return res.send({
+          success: false,
+          message: "Brand name already exists",
+        });
+      }
+    }
+
+    let image = brand.image;
+    // Nếu có file ảnh mới thì upload và xóa ảnh cũ
+    if (req.file && req.file.path) {
+      // Lấy public_id từ url cũ
+      const publicIdMatch = brand.image.match(/\/e-commerce\/([^\.\/]+)\./);
+      if (publicIdMatch && publicIdMatch[1]) {
+        const publicId = `e-commerce/${publicIdMatch[1]}`;
+        try {
+          await cloudinary.uploader.destroy(publicId);
+        } catch (e) {
+          console.log("Failed to delete old image:", e.message);
+        }
+      }
+      const imageUpload = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "image",
+        folder: "e-commerce",
+      });
+      image = imageUpload.secure_url;
+    }
+
+    brand.name = name || brand.name;
+    brand.description = description || brand.description;
+    brand.image = image;
+    await brand.save();
+    res.send({ success: true, data: brand });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.log(err);
+    res.status(400).json({
+      success: false,
+      message: "Failed to update brand  " + err.message,
+    });
   }
 };
 
 export const deleteBrand = async (req, res) => {
   try {
-    await Brands.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted successfully" });
+    const id = req.params.id;
+    const brand = await Brands.findById(id);
+    if (!brand) {
+      return res.json({
+        success: false,
+        message: "Brand not found",
+      });
+    }
+    // / detroy image
+    const publicIdMatch = brand.image.match(/\/e-commerce\/([^\.\/]+)\./);
+    if (publicIdMatch && publicIdMatch[1]) {
+      const publicId = `e-commerce/${publicIdMatch[1]}`;
+      try {
+        await cloudinary.uploader.destroy(publicId);
+      } catch (e) {
+        console.log("Failed to delete old image:", e.message);
+      }
+    }
+
+    await Brands.findByIdAndDelete(id);
+    res.json({ success: true, message: "Deleted successfully" });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({
+      success: false,
+      message: "Failed to delete brand" + err.message,
+    });
   }
 };

@@ -2,18 +2,10 @@ import Categories from "../models/CategoryModel.js";
 
 export const getCategories = async (req, res) => {
   const categories = await Categories.find();
-  if (categories.length === 0) {
-    res.send({
-      success: false,
-      message: "No categories found",
-      categories: [],
-    });
-  } else {
-    res.send({
-      success: true,
-      categories: categories,
-    });
-  }
+  res.send({
+    success: true,
+    data: categories,
+  });
 };
 
 export const createCategory = async (req, res) => {
@@ -52,11 +44,11 @@ export const updateCategory = async (req, res) => {
       name,
       description,
     });
+
     if (!updated) {
       return res.send({
         success: false,
         message: "Category not found",
-        category: null,
       });
     }
     res.send({
@@ -68,7 +60,6 @@ export const updateCategory = async (req, res) => {
     res.send({
       success: false,
       message: err.message,
-      category: null,
     });
     console.log(err.message);
   }

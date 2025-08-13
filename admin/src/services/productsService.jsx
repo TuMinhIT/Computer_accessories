@@ -9,7 +9,7 @@ export const ProductsService = () => {
   const getAllProducts = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(backendUrl + "/api/products");
+      const res = await axios.get(backendUrl + "/api/products");
       if (res.success) {
         return res.data;
       } else {

@@ -3,7 +3,7 @@ import { assets } from "../assets/assets";
 const Footer = () => {
   return (
     <div>
-      <footer className="bg-white dark:bg-gray-900 p-10">
+      <footer className="bg-white dark:bg-gray-900 px-10 py-5">
         <div className="px-6 py-8 flex  md:flex-row justify-around">
           {/* //logo */}
           <div className="flex flex-col items-center ">
@@ -91,7 +91,7 @@ const Footer = () => {
           </div>
         </div>
         <hr className="my-5 border-gray-200 dark:border-gray-700" />
-        <div className="flex flex-row justify-between p-5">
+        <div className="flex flex-row justify-between p-3">
           <p className="text-sm text-gray-500">
             © Copyright 2025. All Rights Reserved.
           </p>

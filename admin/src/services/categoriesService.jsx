@@ -7,40 +7,36 @@ export const categoriesService = () => {
 
   const getAllCategories = async () => {
     try {
-      setLoading(true);
       const res = await axios.get(backendUrl + "/api/categories");
-      return res.data;
+      if (!res.data.success) {
+        toast.error(res.data.message);
+        return null;
+      }
+      return res.data.data;
     } catch (err) {
       toast.error("Failed to fetch categories: " + (err.message || ""));
       console.error(err);
-    } finally {
-      setLoading(false);
+      return null;
     }
   };
 
   const createCategory = async (data) => {
-    setLoading(true);
     try {
       const res = await axios.post(backendUrl + "/api/categories/add", data);
       return res.data;
     } catch (err) {
       toast.error("Failed to create category: " + (err.message || ""));
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
   const updateCategory = async (data) => {
-    setLoading(true);
     try {
       const res = await axios.put(backendUrl + "/api/categories/update", data);
       return res.data;
     } catch (err) {
       toast.error("Failed to update category: " + (err.message || ""));
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 

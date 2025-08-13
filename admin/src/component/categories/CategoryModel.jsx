@@ -1,32 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { categoriesService } from "../../services/categoriesService";
 import { toast } from "react-toastify";
 
-const CategoryModel = ({ setShowCategoryModal, add, categories }) => {
+const CategoryModel = ({
+  refetch,
+  setShowCategoryModal,
+  editing,
+  category,
+}) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const { createCategory } = categoriesService();
+  const { updateCategory, createCategory } = categoriesService();
+  useEffect(() => {
+    if (category) {
+      setName(category.name);
+      setDescription(category.description);
+    }
+  }, [category]);
 
-  const handleEditCategory = (id) => {
-    // setCategories(categories.filter((c) => c.id !== id));
-  };
-  const handleAddCategory = () => {
+  const handleEditCategory = async () => {
     if (name.trim() === "") return;
+    const res = await updateCategory({ _id: category._id, name, description });
+    if (res && res.success) {
+      toast.success("Category updated!");
+      setShowCategoryModal(false);
+      if (refetch) refetch();
+    } else {
+      toast.error(res?.message || "Update failed");
+    }
+  };
 
-    createCategory({ name, description }).then((res) => {
-      if (res.success) {
-        categories.unshift(res.category);
-        setShowCategoryModal(false);
-        toast.success("Category added!");
-      } else {
-        toast.error(res.message);
-      }
-    });
+  const handleAddCategory = async () => {
+    if (name.trim() === "") return;
+    const res = await createCategory({ name, description });
+    if (res && res.success) {
+      toast.success("Category added!");
+      setShowCategoryModal(false);
+      if (refetch) refetch();
+    } else {
+      toast.error(res?.message || "Add failed");
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!add) return handleEditCategory();
+    if (editing) return handleEditCategory();
     handleAddCategory();
   };
 
@@ -59,24 +77,25 @@ const CategoryModel = ({ setShowCategoryModal, add, categories }) => {
         />
         <div className="flex justify-end gap-2">
           <button
+            type="button"
             onClick={() => setShowCategoryModal(false)}
             className="px-4 py-2 text-gray-600 hover:text-black"
           >
             cancel
           </button>
-          {add ? (
+          {editing ? (
             <button
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
-              Add
+              Update
             </button>
           ) : (
             <button
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
-              Update
+              Add
             </button>
           )}
         </div>

@@ -1,17 +1,53 @@
-const Brands = ({
-  setBrands,
-  brands,
-  handleDeleteBrand,
-  setShowBrandModal,
-}) => {
-  const handleAddBrand = () => {
-    if (newBrand.trim() === "") return;
-    setBrands([...brands, { id: Date.now(), name: newBrand }]);
-    setNewBrand("");
-    setShowBrandModal(false);
+import { useState } from "react";
+import BrandModel from "./BrandModel";
+import { useEffect } from "react";
+import { brandsService } from "../../services/brandsService";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "../Spinner";
+import { toast } from "react-toastify";
+
+const Brands = () => {
+  const [newBrand, setNewBrand] = useState("");
+  const [showBrandModal, setShowBrandModal] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [brand, setBrand] = useState(null);
+
+  const { getAllBrands, deleteBrand } = brandsService();
+
+  const {
+    isLoading,
+    data: brands,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["brands"],
+    queryFn: getAllBrands,
+    select: (data) => (Array.isArray(data) ? [...data].reverse() : []),
+    retry: 1,
+  });
+
+  const handleDeleteBrand = async (id) => {
+    const res = await deleteBrand(id);
+    if (res && res.success) {
+      toast.success("Brand deleted!");
+      refetch();
+    } else {
+      toast.error(res?.message || "Delete failed");
+    }
   };
+
+  if (isLoading) return <Spinner />;
+  if (error) return <div className="text-red-500">{error.message}</div>;
   return (
     <div className="bg-white rounded-xl shadow p-6 border">
+      {showBrandModal && (
+        <BrandModel
+          setShowBrandModal={setShowBrandModal}
+          editing={editing}
+          brand={brand}
+          refetch={refetch}
+        />
+      )}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-indigo-700">Brands</h2>
         <button
@@ -24,30 +60,53 @@ const Brands = ({
 
       <table className="w-full text-left border-t">
         <thead>
-          <tr className="text-gray-600 text-sm">
+          <tr className="text-gray-600 bg-gray-300 text-sm">
             <th className="py-2">#</th>
             <th className="py-2">Name</th>
+            <th className="py-2">Description</th>
             <th className="py-2">Action</th>
           </tr>
         </thead>
         <tbody>
-          {brands.length === 0 ? (
+          {!brands || brands.length === 0 ? (
             <tr>
               <td colSpan="3" className="text-center text-gray-400 py-6">
-                Chưa có thương hiệu nào.
+                There are no categories yet.
               </td>
             </tr>
           ) : (
             brands.map((brand, idx) => (
-              <tr key={brand.id} className="border-t hover:bg-gray-50 text-sm">
-                <td className="py-2">{idx + 1}</td>
-                <td className="py-2">{brand.name}</td>
+              <tr key={brand._id} className="border-t hover:bg-gray-50 text-sm">
+                <td className="py-2 px-2">{idx + 1}</td>
+                <td className="py-2 font-bold text-blue-400">
+                  <div className="flex flex-col">
+                    {brand.name}
+
+                    <img
+                      src={brand.image}
+                      alt="Preview"
+                      className="w-10 h-10 object-cover rounded-lg border"
+                    />
+                  </div>
+                </td>
+                <td className="py-2">{brand.description}</td>
                 <td className="py-2">
                   <button
-                    onClick={() => handleDeleteBrand(brand.id)}
+                    onClick={() => handleDeleteBrand(brand._id)}
                     className="text-red-500 hover:underline"
                   >
                     Delete
+                  </button>
+                  <span className="mx-2">/</span>
+                  <button
+                    onClick={() => {
+                      setEditing(true);
+                      setShowBrandModal(true);
+                      setBrand(brand);
+                    }}
+                    className="text-blue-500 hover:underline"
+                  >
+                    Edit
                   </button>
                 </td>
               </tr>

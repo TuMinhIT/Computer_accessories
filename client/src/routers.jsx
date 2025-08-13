@@ -10,15 +10,16 @@ import ViewCustomer from "./pages/ViewCustomer";
 // import CheckoutCustomerForm from "./components/CheckoutCustomerForm";
 import CheckoutPage from "./pages/CheckoutPage";
 import ReportPage from "./pages/ReportPage";
+import Transaction from "./pages/transaction";
+import ProfileManager from "./pages/ProfileManager";
 // import CustomerHistory from "./components/CustomerHistory";
-// import Transaction from "./pages/transaction";
 const Routers = () => {
   return (
     <>
       <main className="flex-grow bg-gray-50">
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/" element={<Transaction />} /> */}
+          <Route path="/tran" element={<Transaction />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/sales" element={<ReportPage />} />
@@ -28,7 +29,8 @@ const Routers = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/view-customer" element={<ViewCustomer />} />
-          {/* <Route path="/pos" element={</>} /> */}
+          <Route path="/pos" element={<PosPage />} />
+          <Route path="/profile" element={<ProfileManager />} />
         </Routes>
       </main>
     </>

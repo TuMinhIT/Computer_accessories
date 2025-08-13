@@ -15,6 +15,7 @@ dotenv.config();
 const app = express();
 
 connectDB().then(createDefaultAdmin);
+connectCloudinary();
 
 app.use(express.json());
 app.use(cors());

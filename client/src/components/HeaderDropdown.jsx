@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 const HeaderDropdown = () => {
   return (
     <div className="absolute right-0 top-full mt-2 z-50">
@@ -7,7 +8,25 @@ const HeaderDropdown = () => {
 
         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
           <li>
-            <a
+            <Link
+              to={"/profile"}
+              className="flex items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
+            >
+              <svg
+                className="w-4 h-4 mr-3"
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#0000F5"
+              >
+                <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+              </svg>
+              Profile
+            </Link>
+          </li>
+          <li>
+            <Link
               href="#"
               className="flex items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
             >
@@ -31,10 +50,10 @@ const HeaderDropdown = () => {
                 />
               </svg>
               Settings
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="#"
               className="flex items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
             >
@@ -52,11 +71,11 @@ const HeaderDropdown = () => {
                 />
               </svg>
               Earnings
-            </a>
+            </Link>
           </li>
         </ul>
         <div className="py-1">
-          <a
+          <Link
             href="#"
             className="flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-gray-600 transition-colors duration-200"
           >
@@ -74,7 +93,7 @@ const HeaderDropdown = () => {
               />
             </svg>
             Sign out
-          </a>
+          </Link>
         </div>
       </div>
     </div>

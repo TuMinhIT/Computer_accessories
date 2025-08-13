@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Footer from "../component/Footer";
 import { assets } from "../assets/assets";
-import { Link } from "react-router-dom";
+
 import { ShopContext } from "../context/ShopContext";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +15,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const username = email.split("@")[0];
-    console.log(backendUrl);
+
     try {
       const res = await axios.post("http://localhost:5000/api/users/login", {
         username,

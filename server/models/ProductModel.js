@@ -7,16 +7,15 @@ const productSchema = new mongoose.Schema({
 
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
+    ref: "Categories",
     required: true,
   },
-  subcategory: {
+  brand: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Subcategory",
+    ref: "Brand",
     required: true,
   },
 
-  brand: { type: String, required: true },
   price: { type: Number, required: true },
   cost: { type: Number, required: true },
   stock: { type: Number, required: true },
@@ -32,5 +31,5 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Products", productSchema);
 export default Product;

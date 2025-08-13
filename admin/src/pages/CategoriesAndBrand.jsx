@@ -2,7 +2,7 @@ import { useState } from "react";
 import Categories from "../component/categories/Categories";
 import Brands from "../component/brands/Brands";
 import CategoryModel from "../component/categories/CategoryModel";
-import BranModel from "../component/brands/BranModel";
+import BranModel from "../component/brands/BrandModel";
 
 export default function CategoryBrandManager() {
   const [brands, setBrands] = useState([]);
@@ -20,17 +20,7 @@ export default function CategoryBrandManager() {
       {/* Category Management */}
       <Categories />
       {/* Brand Management */}
-      {/* <Brands
-        setBrands={setBrands}
-        brands={brands}
-        handleDeleteBrand={handleDeleteBrand}
-        setShowBrandModal={setShowBrandModal}
-      /> */}
-      {/* Category Modal */}
-      {/* {showCategoryModal && <CategoryModel />} */}
-
-      {/* Brand Modal */}
-      {/* {showBrandModal && <BranModel />} */}
+      <Brands />
     </div>
   );
 }
