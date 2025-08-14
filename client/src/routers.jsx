@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
-import Product from "./pages/Product";
+// import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import PosPage from "./pages/PosPage";
 import ViewCustomer from "./pages/ViewCustomer";
@@ -25,7 +25,7 @@ const Routers = () => {
           <Route path="/sales" element={<ReportPage />} />
 
           <Route path="/login" element={<Login />} />
-          <Route path="/product" element={<Product />} />
+          {/* <Route path="/product" element={<Product />} /> */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/view-customer" element={<ViewCustomer />} />

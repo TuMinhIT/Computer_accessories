@@ -1,4 +1,4 @@
-import { assets } from "../assets/assets";
+import { assets } from "../../../admin/src/assets/assets";
 import { Link } from "react-router-dom";
 const Signup = () => {
   const handleSubmit = (e) => {

@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { assets } from "../../assets/assets";
 
-const ActionButton = ({ product }) => {
-  const [showEditModal, setShowEditModal] = useState(false);
-
+const ActionButton = ({ handleDelete }) => {
   return (
     <div className="relative flex items-center justify-end">
       <div className="group/action relative">
@@ -21,12 +18,12 @@ const ActionButton = ({ product }) => {
                 Edit
               </span>
             </li>
-            <li className="cursor-pointer">
+            {/* <li className="cursor-pointer">
               <span className="block px-4 py-2 hover:bg-yellow-50 hover:text-yellow-700 transition rounded">
-                Block
+                blocked
               </span>
-            </li>
-            <li className="cursor-pointer">
+            </li> */}
+            <li onClick={handleDelete} className="cursor-pointer">
               <span className="block px-4 py-2 hover:bg-red-50 hover:text-red-600 transition rounded">
                 Delete
               </span>

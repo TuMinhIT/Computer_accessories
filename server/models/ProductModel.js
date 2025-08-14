@@ -7,12 +7,12 @@ const productSchema = new mongoose.Schema({
 
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Categories",
+    ref: "categories",
     required: true,
   },
   brand: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Brand",
+    ref: "brands",
     required: true,
   },
 
@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
   cost: { type: Number, required: true },
   stock: { type: Number, required: true },
   warrantyMonths: { type: Number },
-  imageUrl: { type: [String], required: true },
+  images: { type: [String], required: true },
   bestseller: { type: Boolean, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

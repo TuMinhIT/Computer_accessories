@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
-import Product from "./pages/Product";
+
 import { ToastContainer } from "react-toastify";
 import ProductList from "./components/ProductList";
 import { ShopContext } from "./context.jsx/ShopContext";

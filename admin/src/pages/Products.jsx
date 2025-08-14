@@ -1,117 +1,52 @@
-import { useContext, useEffect, useState } from "react";
-import { assets, productImages } from "../assets/assets";
+import { useEffect, useState } from "react";
 import Search from "../component/Search";
 import ProductLine from "../component/products/ProductLine";
 import AddProduct from "../component/products/AddProduct";
 import { ProductsService } from "../services/productsService";
-import { ShopContext } from "../context/ShopContext";
-import CustomLoader from "../component/CustomLoader";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "../component/Spinner";
 const Products = () => {
-  const MoocProducts = [
-    {
-      id: 1,
-      name: "iPhone 15 Pro",
-      description:
-        "iPhone 15 Pro is the latest flagship smartphone from Apple.",
-      barcode: "1234567890",
-      category: "Phone",
-      brand: "Apple",
-      price: 1000,
-      cost: 800,
-      stock: 10,
-      warrantyMonths: 12,
-      imageUrl: [productImages.screen1, productImages.screen2],
-      bestseller: false,
-      createdAt: "2024-01-15",
-    },
-    {
-      id: 2,
-      name: "iPhone 14 Pro",
-      description:
-        "iPhone 15 Pro is the latest flagship smartphone from Apple.",
-      barcode: "1234567890",
-      category: "xPhone",
-      brand: "Axxpple",
-      price: 1000,
-      cost: 800,
-      stock: 10,
-      warrantyMonths: 12,
-      imageUrl: [productImages.screen3, productImages.screen2],
-      bestseller: true,
-      color: "blue",
-      createdAt: "2024-01-15",
-    },
-    {
-      id: 3,
-      name: "iPhone 14 Pro",
-      description:
-        "iPhone 15 Pro is the latest flagship smartphone from Apple.",
-      barcode: "1234567890",
-      category: "xPhone",
-      brand: "Axxpple",
-      price: 1000,
-      cost: 800,
-      stock: 10,
-      warrantyMonths: 12,
-      imageUrl: [productImages.screen4, productImages.screen2],
-      bestseller: true,
-      createdAt: "2024-01-15",
-      color: "blue",
-    },
-    {
-      id: 4,
-      name: "iPhone 14 Pro",
-      description:
-        "iPhone 15 Pro is the latest flagship smartphone from Apple.",
-      barcode: "1234567890",
-      category: "xPhone",
-      brand: "Axxpple",
-      price: 1000,
-      cost: 800,
-      stock: 10,
-      warrantyMonths: 12,
-      imageUrl: [productImages.screen4, productImages.screen2],
-      color: "blue",
-      bestseller: true,
-      createdAt: "2024-01-15",
-    },
-  ];
   const { getAllProducts } = ProductsService();
-
-  const [products, setProducts] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showDetailModal, setShowDetailModal] = useState(false);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      // const productss = await getAllProducts();
-      // console.log(productss);
-    };
-    fetchProducts();
-  }, []);
+  const {
+    isLoading,
+    data: products,
+    refetch,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getAllProducts,
+  });
 
   useEffect(() => {
-    // setProducts(MoocProducts);
-  }, []);
+    if (products) {
+      setSearchResult(products);
+    }
+  }, [products]);
 
   useEffect(() => {
-    handleSearch();
-  }, [search]);
+    if (search.trim() !== "") {
+      handleSearch();
+    } else {
+      // Nếu search rỗng thì hiển thị lại toàn bộ sản phẩm
+      setSearchResult(products);
+    }
+  }, [search, products]);
 
   const handleSearch = () => {
-    // TODO: call api search
-    setProducts(
-      MoocProducts.filter((product) =>
-        product.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
-      )
+    const filtered = products.filter((product) =>
+      product.name.toLowerCase().includes(search.toLowerCase())
     );
+    setSearchResult(filtered);
   };
 
   return (
     <>
-      <CustomLoader />
-      {showAddModal && <AddProduct setShowAddModal={setShowAddModal} />}
+      {showAddModal && (
+        <AddProduct setShowAddModal={setShowAddModal} refetch={refetch} />
+      )}
       <div className="bg-white rounded-xl shadow-sm border ">
         <div className="p-6 border-b flex justify-between items-center">
           <h3 className="text-lg font-semibold text-gray-900">Products</h3>
@@ -131,10 +66,28 @@ const Products = () => {
             + New
           </button>
         </div>
-        <div className="overflow-x-auto h-screen">
-          {products.map((product) => (
-            <ProductLine key={product.id} product={product} />
-          ))}
+
+        <div className="px-3 justify-between overflow-x-auto h-screen">
+          {isLoading && <Spinner />}
+
+          {/*  nếu ko có products */}
+          {!isLoading &&
+            Array.isArray(searchResult) &&
+            searchResult.length === 0 && (
+              <div className="text-blue-600 text-center text-2xl py-10 m-auto ">
+                No item found
+              </div>
+            )}
+
+          {Array.isArray(searchResult) &&
+            searchResult.length !== 0 &&
+            searchResult.map((product) => (
+              <ProductLine
+                key={product._id}
+                refetch={refetch}
+                product={product}
+              />
+            ))}
         </div>
       </div>
     </>

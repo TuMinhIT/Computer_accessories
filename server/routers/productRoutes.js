@@ -8,7 +8,7 @@ import {
 } from "../controllers/productController.js";
 
 import auth from "../middleware/auth.js";
-
+import upload from "../middleware/multer.js";
 const router = express.Router();
 
 // router.get('/', auth, getAllProducts);
@@ -17,7 +17,7 @@ const router = express.Router();
 // router.delete('/:id', auth, deleteProduct);
 
 router.get("/", getAllProducts);
-router.post("/", createProduct);
+router.post("/", upload.array("images", 10), createProduct);
 router.put("/:id", updateProduct);
 router.delete("/:id", deleteProduct);
 

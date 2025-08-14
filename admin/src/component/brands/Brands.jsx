@@ -7,7 +7,6 @@ import Spinner from "../Spinner";
 import { toast } from "react-toastify";
 
 const Brands = () => {
-  const [newBrand, setNewBrand] = useState("");
   const [showBrandModal, setShowBrandModal] = useState(false);
   const [editing, setEditing] = useState(false);
   const [brand, setBrand] = useState(null);
