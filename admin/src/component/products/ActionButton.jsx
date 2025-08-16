@@ -1,6 +1,6 @@
 import { assets } from "../../assets/assets";
 
-const ActionButton = ({ handleDelete }) => {
+const ActionButton = ({ handleDelete, setShowEditModal }) => {
   return (
     <div className="relative flex items-center justify-end">
       <div className="group/action relative">
@@ -13,7 +13,10 @@ const ActionButton = ({ handleDelete }) => {
           className="z-20 absolute right-0 top-8 min-w-[9rem] bg-white border border-gray-200 rounded-lg shadow-lg group-hover/action:block hidden animate-fadeIn"
         >
           <ul className="py-2 text-sm text-gray-700">
-            <li className="cursor-pointer">
+            <li
+              onClick={() => setShowEditModal(true)}
+              className="cursor-pointer"
+            >
               <span className="block px-4 py-2 hover:bg-blue-50 hover:text-blue-700 transition rounded">
                 Edit
               </span>

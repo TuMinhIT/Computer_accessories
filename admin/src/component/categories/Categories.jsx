@@ -3,46 +3,38 @@ import { categoriesService } from "../../services/categoriesService";
 import CategoryModel from "./CategoryModel";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
+import { categoryHooks } from "../../hooks/categoryHooks";
 import Spinner from "../Spinner";
 
 const Categories = () => {
   const [editing, setEditing] = useState(false);
   const [category, setCategory] = useState(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const { getAllCategories, deleteCategory } = categoriesService();
+  // const { getAllCategories, deleteCategory } = categoriesService();
+  const { useCategories, useDeleteCategory } = categoryHooks();
 
-  const {
-    isLoading,
-    data: categories,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getAllCategories,
-    select: (data) => (Array.isArray(data) ? [...data].reverse() : []),
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: 1000 * 60,
-    retry: 1,
-  });
-
+  const { isLoading, data: categories, error } = useCategories();
+  const { mutate, isPending } = useDeleteCategory();
   const handleDeleteCategory = async (id) => {
-    const res = await deleteCategory(id);
-    if (res && res.success) {
-      toast.success("Category deleted!");
-      refetch();
-    } else {
-      toast.error(res?.message || "Delete failed");
-    }
+    mutate(id, {
+      onSuccess: (res) => {
+        if (res && res.success) {
+          toast.success("Category deleted!");
+        } else {
+          toast.error(res?.message || "Delete failed");
+        }
+      },
+    });
   };
 
   if (isLoading) return <Spinner />;
+  if (isPending) return <Spinner />;
   if (error) return <div className="text-red-500">{error.message}</div>;
 
   return (
     <div className="bg-white rounded-xl shadow p-6 border">
       {showCategoryModal && (
         <CategoryModel
-          refetch={refetch}
           setShowCategoryModal={setShowCategoryModal}
           editing={editing}
           category={category}

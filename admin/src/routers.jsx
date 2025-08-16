@@ -7,6 +7,7 @@ import Inbox from "./pages/Inbox";
 import Customers from "./pages/Customers";
 import CategoriesAndBrand from "./pages/CategoriesAndBrand";
 import ProfileManager from "./pages/ProfileManager";
+import NotFound from "./pages/NotFound";
 const Routers = () => {
   return (
     <>

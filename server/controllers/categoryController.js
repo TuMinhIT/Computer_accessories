@@ -4,8 +4,23 @@ export const getCategories = async (req, res) => {
   const categories = await Categories.find();
   res.send({
     success: true,
-    data: categories,
+    data: categories.reverse(),
   });
+};
+
+export const getCategory = async (req, res) => {
+  const { id } = req.params;
+  const category = await Categories.findById(id);
+  if (category) {
+    res.send({
+      success: true,
+      data: category,
+    });
+  } else
+    res.send({
+      success: false,
+      message: "Category not found!",
+    });
 };
 
 export const createCategory = async (req, res) => {
@@ -38,9 +53,10 @@ export const createCategory = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
   try {
-    const { _id, name, description } = req.body;
+    const { id } = req.params;
+    const { name, description } = req.body;
 
-    const updated = await Categories.findByIdAndUpdate(_id, {
+    const updated = await Categories.findByIdAndUpdate(id, {
       name,
       description,
     });
@@ -67,7 +83,7 @@ export const updateCategory = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
     const category = await Categories.findByIdAndDelete(id);
 
     if (!category) {

@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 import { categoriesService } from "../../services/categoriesService";
 import { toast } from "react-toastify";
-
-const CategoryModel = ({
-  refetch,
-  setShowCategoryModal,
-  editing,
-  category,
-}) => {
+import { categoryHooks } from "../../hooks/categoryHooks";
+import Spinner from "../Spinner";
+const CategoryModel = ({ setShowCategoryModal, editing, category }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const { updateCategory, createCategory } = categoriesService();
+  const { useUpdateCategory, useCreateCategory } = categoryHooks();
+
+  const {
+    isPending: loadEdit,
+    mutate: mutateEdit,
+    error: errorEdit,
+  } = useUpdateCategory();
+
+  const { isPending, mutate, error } = useCreateCategory();
+
   useEffect(() => {
     if (category) {
       setName(category.name);
@@ -20,26 +25,37 @@ const CategoryModel = ({
 
   const handleEditCategory = async () => {
     if (name.trim() === "") return;
-    const res = await updateCategory({ _id: category._id, name, description });
-    if (res && res.success) {
-      toast.success("Category updated!");
-      setShowCategoryModal(false);
-      if (refetch) refetch();
-    } else {
-      toast.error(res?.message || "Update failed");
-    }
+
+    mutateEdit(
+      { id: category._id, data: { name, description } },
+      {
+        onSuccess: (res) => {
+          if (res && res.success) {
+            toast.success("Category updated!");
+            setShowCategoryModal(false);
+          } else {
+            toast.error(res?.message || "Update failed");
+          }
+        },
+      }
+    );
   };
 
   const handleAddCategory = async () => {
     if (name.trim() === "") return;
-    const res = await createCategory({ name, description });
-    if (res && res.success) {
-      toast.success("Category added!");
-      setShowCategoryModal(false);
-      if (refetch) refetch();
-    } else {
-      toast.error(res?.message || "Add failed");
-    }
+    mutate(
+      { name, description },
+      {
+        onSuccess: (res) => {
+          if (res && res.success) {
+            toast.success("Category added!");
+            setShowCategoryModal(false);
+          } else {
+            toast.error(res?.message || "Add failed");
+          }
+        },
+      }
+    );
   };
 
   const handleSubmit = (e) => {
@@ -54,6 +70,7 @@ const CategoryModel = ({
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-xl w-[90%] max-w-md shadow-lg space-y-4"
       >
+        {isPending && <Spinner />}
         <h3 className="text-lg font-bold text-blue-700">Add new category</h3>
         <label htmlFor="name">Category name</label>
         <input

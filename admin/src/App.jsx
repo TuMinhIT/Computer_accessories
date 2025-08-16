@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import DashboardLayout from "./pages/DashboardLayout";
-
+import NotFound from "./pages/NotFound";
 export default function App() {
   return (
     <Routes>

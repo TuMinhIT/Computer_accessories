@@ -2,27 +2,20 @@ import { useEffect, useState } from "react";
 import Search from "../component/Search";
 import ProductLine from "../component/products/ProductLine";
 import AddProduct from "../component/products/AddProduct";
-import { ProductsService } from "../services/productsService";
-import { useQuery } from "@tanstack/react-query";
 import Spinner from "../component/Spinner";
+import { productHooks } from "../hooks/productHooks";
 const Products = () => {
-  const { getAllProducts } = ProductsService();
+  const { useProducts } = productHooks();
+
   const [searchResult, setSearchResult] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
-
-  const {
-    isLoading,
-    data: products,
-    refetch,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: getAllProducts,
-  });
-
+  const { data: products, isLoading, refetch } = useProducts();
+  const [numProduct, setNumProduct] = useState(0);
   useEffect(() => {
     if (products) {
       setSearchResult(products);
+      setNumProduct(products.length);
     }
   }, [products]);
 
@@ -44,12 +37,13 @@ const Products = () => {
 
   return (
     <>
-      {showAddModal && (
-        <AddProduct setShowAddModal={setShowAddModal} refetch={refetch} />
-      )}
+      {showAddModal && <AddProduct setShowAddModal={setShowAddModal} />}
+
       <div className="bg-white rounded-xl shadow-sm border ">
         <div className="p-6 border-b flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-900">Products</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Products ({numProduct})
+          </h3>
 
           <Search
             search={search}
@@ -67,7 +61,7 @@ const Products = () => {
           </button>
         </div>
 
-        <div className="px-3 justify-between overflow-x-auto h-screen">
+        <div className="px-3 justify-between overflow-x-auto">
           {isLoading && <Spinner />}
 
           {/*  nếu ko có products */}

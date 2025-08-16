@@ -8,25 +8,25 @@ import { brandsService } from "../../services/brandsService";
 import { productHooks } from "../../hooks/productHooks";
 import Spinner from "../Spinner";
 
-const AddProduct = ({ setShowAddModal }) => {
+const EditProduct = ({ product, setShowEditModal }) => {
   const { getAllCategories } = categoriesService();
-  const { useCreateProduct } = productHooks();
+  const { useUpdateProduct } = productHooks();
 
   const { getAllBrands } = brandsService();
   const [form, setForm] = useState({
-    name: "",
-    barcode: "",
-    category: "",
-    brand: "",
-    price: "",
-    cost: "",
-    stock: "",
-    warrantyMonths: "",
-    description: "",
-    bestseller: false,
-    images: [],
+    name: product.name,
+    barcode: product.barcode,
+    category: product.category,
+    brand: product.brand,
+    price: product.price,
+    cost: product.cost,
+    stock: product.stock,
+    warrantyMonths: product.warrantyMonths,
+    description: product.description,
+    bestseller: product.bestseller,
+    images: product.images,
   });
-  const [imagePreviews, setImagePreviews] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState(product.images);
   const maxImage = 9;
 
   const { data: categories } = useQuery({
@@ -38,7 +38,7 @@ const AddProduct = ({ setShowAddModal }) => {
     queryFn: getAllBrands,
   });
 
-  const { mutate, isPending } = useCreateProduct();
+  const { mutate, isPending } = useUpdateProduct();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -50,38 +50,25 @@ const AddProduct = ({ setShowAddModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (form.images.length === 0) {
-      toast.error("Must have least 1 image!");
+      toast.error("Must have at least 1 image!");
       return;
     }
 
-    if (form.brand == "") {
-      form.brand = brands[0]._id;
-    }
-
-    if (form.category == "") {
-      form.category = categories[0]._id;
-    }
-
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (key === "images") {
-        value.forEach((img) => formData.append("images", img));
-      } else {
-        formData.append(key, value);
+    mutate(
+      { id: product._id, data: form },
+      {
+        onSuccess: (res) => {
+          if (res.success) {
+            toast.success("Product updated!");
+            setShowEditModal(false);
+          } else {
+            toast.error(res.message);
+          }
+        },
       }
-    });
-
-    mutate(formData, {
-      onSuccess: (res) => {
-        if (res.success) {
-          toast.success("Product added!");
-          setShowAddModal(false);
-        } else {
-          toast.error(res.message);
-        }
-      },
-    });
+    );
   };
 
   const handleImageChange = (e) => {
@@ -115,7 +102,7 @@ const AddProduct = ({ setShowAddModal }) => {
       >
         <div
           className="absolute inset-0 cursor-pointer"
-          onClick={() => setShowAddModal(false)}
+          onClick={() => setShowEditModal(false)}
         />
         <div className="mb-10 relative w-full max-w-4xl h-[90vh] mt-10 rounded-2xl shadow-2xl border border-gray-300 bg-white flex flex-col overflow-hidden">
           <div className="flex flex-col flex-1 overflow-y-auto hide-scrollbar p-6">
@@ -123,7 +110,7 @@ const AddProduct = ({ setShowAddModal }) => {
               Add new product
             </h2>
             <div
-              onClick={() => setShowAddModal(false)}
+              onClick={() => setShowEditModal(false)}
               className="absolute top-4 right-4 cursor-pointer"
             >
               X
@@ -155,7 +142,7 @@ const AddProduct = ({ setShowAddModal }) => {
                     className="border-0 border-b border-b-gray-400 px-2 py-1 w-1/3 mx-3 focus:outline-none focus:border-b-blue-500 transition-all duration-200 rounded-none"
                     type="text"
                     name="barcode"
-                    id=""
+                    defaultValue={form.barcode}
                   />
                 </div>
                 <div>
@@ -168,6 +155,7 @@ const AddProduct = ({ setShowAddModal }) => {
                     className="border-0 border-b border-b-gray-400 px-2 py-1 w-2/3 mx-3 focus:outline-none focus:border-b-blue-500 transition-all duration-200 rounded-none"
                     type="text"
                     name="name"
+                    defaultValue={form.name}
                   />
                 </div>
               </div>
@@ -186,6 +174,7 @@ const AddProduct = ({ setShowAddModal }) => {
                         name="description"
                         rows={3}
                         required
+                        defaultValue={form.description}
                       />
                     </div>
                   </div>
@@ -199,10 +188,12 @@ const AddProduct = ({ setShowAddModal }) => {
                         >
                           Category
                         </label>
+
                         <select
                           onChange={handleChange}
                           name="category"
                           id="category"
+                          value={form.category._id}
                           className=" max-w-80 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none bg-white"
                         >
                           {categories &&
@@ -222,10 +213,12 @@ const AddProduct = ({ setShowAddModal }) => {
                         >
                           Brand
                         </label>
+
                         <select
                           onChange={handleChange}
                           id="brand"
                           name="brand"
+                          value={form.brand._id}
                           className="max-w-80 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none bg-white"
                         >
                           {brands &&
@@ -259,6 +252,7 @@ const AddProduct = ({ setShowAddModal }) => {
                         type="number"
                         required
                         placeholder="$1243"
+                        defaultValue={form.price}
                       />
                     </div>
                     <div className="flex flex-col">
@@ -276,6 +270,7 @@ const AddProduct = ({ setShowAddModal }) => {
                         type="number"
                         required
                         placeholder="$1243"
+                        defaultValue={form.cost}
                       />
                     </div>
                     <div className="flex flex-col">
@@ -293,6 +288,7 @@ const AddProduct = ({ setShowAddModal }) => {
                         type="number"
                         required
                         placeholder="100"
+                        defaultValue={form.stock}
                       />
                     </div>
                     <div className="flex flex-col">
@@ -310,6 +306,7 @@ const AddProduct = ({ setShowAddModal }) => {
                         type="number"
                         required
                         placeholder="13"
+                        defaultValue={form.warrantyMonths}
                       />
                     </div>
                     <div className="flex items-center gap-2 col-span-1 md:col-span-2 mt-2">
@@ -319,6 +316,7 @@ const AddProduct = ({ setShowAddModal }) => {
                         name="bestseller"
                         className="rounded max-w-50 border-gray-300 focus:ring-indigo-200 focus:ring-2"
                         type="checkbox"
+                        defaultValue={form.bestseller}
                       />
                       <label
                         htmlFor="bestseller"
@@ -344,4 +342,4 @@ const AddProduct = ({ setShowAddModal }) => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;

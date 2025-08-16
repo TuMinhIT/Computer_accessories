@@ -1,21 +1,35 @@
 import { useState } from "react";
 import ActionButton from "./ActionButton";
 import { assets } from "../../assets/assets";
-import { ProductsService } from "../../services/productsService";
+
 import Spinner from "../Spinner";
-const ProductLine = ({ product, refetch }) => {
+import { productHooks } from "../../hooks/productHooks";
+import { toast } from "react-toastify";
+import EditProduct from "./EditProduct";
+const ProductLine = ({ product }) => {
   const [index, setIndex] = useState(0);
+  const [showEditModal, setShowEditModal] = useState(false);
   const maxLength = product.images.length;
   const handleClick = () => {
     setIndex((prev) => (prev + 1) % maxLength);
   };
-  const { deleteProduct } = ProductsService();
+  const { useDeleteProduct } = productHooks();
+  const { mutate, isPending } = useDeleteProduct();
+
   const handleDelete = () => {
-    console.log("ddscd");
+    mutate(product._id, {
+      onSuccess: () => {
+        toast.success("Product deleted!");
+      },
+    });
   };
 
   return (
     <>
+      {showEditModal && (
+        <EditProduct product={product} setShowEditModal={setShowEditModal} />
+      )}
+
       <div className=" bg-white border border-gray-200 rounded-xl shadow-sm w-full group hover:shadow-lg hover:border-gray-400 transition-all duration-200  mb-3">
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-2 sm:gap-4 items-center px-2 sm:px-4 py-3">
           {/* Image */}
@@ -49,7 +63,7 @@ const ProductLine = ({ product, refetch }) => {
           {/* Category & Brand */}
           <div className="col-span-2 min-w-0">
             <div className="text-sm text-gray-700 font-medium truncate">
-              {/* {product.category} */}
+              {product.category.name}
             </div>
             <div className="text-xs flex text-black">
               Brand: <p className="ml-1 font-bold"> {product.brand.name}</p>
@@ -91,10 +105,13 @@ const ProductLine = ({ product, refetch }) => {
               Created: {new Date(product.createdAt).toLocaleDateString()}
             </div>
           </div>
-          {/* {isLoading && <Spinner />} */}
+          {isPending && <Spinner />}
           {/* Actions */}
           <div className="col-span-2 flex justify-end">
-            <ActionButton handleDelete={handleDelete} />
+            <ActionButton
+              handleDelete={handleDelete}
+              setShowEditModal={setShowEditModal}
+            />
           </div>
         </div>
         <div className="hidden group-hover:block text-left overflow-x-auto bg-blue-400 p-3 rounded-b-xl border-t border-gray-400 transition-all duration-200">

@@ -80,12 +80,62 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
-    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+    const { id } = req.params;
+
+    const {
+      name,
+      description,
+      barcode,
+      category,
+      brand,
+      price,
+      cost,
+      stock,
+      warrantyMonths,
+      bestseller,
+    } = req.body;
+
+    const existProduct = await Product.findById(req.params.id);
+    if (!existProduct) {
+      return res.status(404).json({
+        success: false,
+        message: "Product does not exist!",
+      });
+    }
+
+    // Nếu muốn giữ lại images
+    const images = existProduct.images;
+
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        description,
+        barcode,
+        category,
+        brand,
+        price,
+        cost,
+        stock,
+        warrantyMonths,
+        bestseller,
+        images,
+      },
+      { new: true }
+    );
+
+    return res.json({ success: true, data: updated });
+
+    res.send({
+      success: true,
+      message: "Update successfully!",
     });
-    res.json(updated);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.send({
+      success: false,
+      message: err.message,
+    });
+    console.log(err.message);
   }
 };
 
