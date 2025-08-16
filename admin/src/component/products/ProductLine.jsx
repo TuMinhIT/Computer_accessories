@@ -63,7 +63,7 @@ const ProductLine = ({ product }) => {
           {/* Category & Brand */}
           <div className="col-span-2 min-w-0">
             <div className="text-sm text-gray-700 font-medium truncate">
-              {product.category.name}
+              {product.category?.name}
             </div>
             <div className="text-xs flex text-black">
               Brand: <p className="ml-1 font-bold"> {product.brand.name}</p>

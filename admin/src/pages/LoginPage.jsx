@@ -1,49 +1,48 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import Footer from "../component/Footer";
 import { assets } from "../assets/assets";
-
+import { UserHooks } from "../hooks/userHoocks";
 import { ShopContext } from "../context/ShopContext";
+import { toast, ToastContainer } from "react-toastify";
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const { backendUrl } = useContext(ShopContext);
-  const navigate = useNavigate();
+  const { navigate, token, setToken } = useContext(ShopContext);
+
+  const { useLogin } = UserHooks();
+  const { mutate, isPending, error } = useLogin();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const username = email.split("@")[0];
 
-    try {
-      const res = await axios.post("http://localhost:5000/api/users/login", {
-        username,
-        password,
-      });
-
-      const { token, role } = res.data;
-
-      if (role === "admin") {
-        localStorage.setItem("adminToken", token);
-        navigate("/dashboard");
-      } else if (role === "staff") {
-        localStorage.setItem("staffToken", token);
-        navigate("/staff-home");
+    mutate(
+      { username, password },
+      {
+        onSuccess: (res) => {
+          console.log(res);
+          if (res.success) {
+            setToken(res.token);
+          } else {
+            toast.error(res.message);
+          }
+        },
       }
-    } catch (error) {
-      const msg = error.response?.data?.message;
-      if (msg === "Please change password before accessing system") {
-        localStorage.setItem("pendingUsername", username);
-        navigate("/change-password");
-      } else {
-        alert(msg || "Login failed");
-      }
-    }
+    );
+
+    // const msg = error.response?.data?.message;
+    // if (msg === "Please change password before accessing system") {
+    //   localStorage.setItem("pendingUsername", username);
+    //   navigate("/change-password");
+    // } else {
+    //   alert(msg || "Login failed");
+    // }
   };
 
   return (
     <>
+      <ToastContainer />
       <div
         className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
         style={{ backgroundImage: `url(${assets.loginBg})` }}
@@ -55,14 +54,14 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+                Username
               </label>
               <input
-                type="email"
+                type="text"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                 placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
 
@@ -95,7 +94,10 @@ const LoginPage = () => {
               </a>
             </div>
 
-            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors">
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors"
+            >
               Login
             </button>
           </form>

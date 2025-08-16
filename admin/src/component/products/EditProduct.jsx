@@ -193,7 +193,7 @@ const EditProduct = ({ product, setShowEditModal }) => {
                           onChange={handleChange}
                           name="category"
                           id="category"
-                          value={form.category._id}
+                          value={form.category?._id ?? ""}
                           className=" max-w-80 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none bg-white"
                         >
                           {categories &&
@@ -218,7 +218,7 @@ const EditProduct = ({ product, setShowEditModal }) => {
                           onChange={handleChange}
                           id="brand"
                           name="brand"
-                          value={form.brand._id}
+                          value={form.brand?._id ?? ""}
                           className="max-w-80 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none bg-white"
                         >
                           {brands &&

@@ -1,50 +1,40 @@
 import { useState } from "react";
 import BrandModel from "./BrandModel";
-import { useEffect } from "react";
-import { brandsService } from "../../services/brandsService";
-import { useQuery } from "@tanstack/react-query";
 import Spinner from "../Spinner";
 import { toast } from "react-toastify";
-
+import { BrandHooks } from "../../hooks/brandHooks";
 const Brands = () => {
   const [showBrandModal, setShowBrandModal] = useState(false);
   const [editing, setEditing] = useState(false);
   const [brand, setBrand] = useState(null);
 
-  const { getAllBrands, deleteBrand } = brandsService();
+  const { useBrands, useDeleteBrand } = BrandHooks();
 
-  const {
-    isLoading,
-    data: brands,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["brands"],
-    queryFn: getAllBrands,
-    select: (data) => (Array.isArray(data) ? [...data].reverse() : []),
-    retry: 1,
-  });
-
+  const { isLoading, data: brands, error } = useBrands();
+  const { mutate, isPending } = useDeleteBrand();
   const handleDeleteBrand = async (id) => {
-    const res = await deleteBrand(id);
-    if (res && res.success) {
-      toast.success("Brand deleted!");
-      refetch();
-    } else {
-      toast.error(res?.message || "Delete failed");
-    }
+    mutate(id, {
+      onSuccess: (res) => {
+        if (res && res.success) {
+          toast.success("Brand deleted!");
+          refetch();
+        } else {
+          toast.error(res?.message || "Delete failed");
+        }
+      },
+    });
   };
 
   if (isLoading) return <Spinner />;
   if (error) return <div className="text-red-500">{error.message}</div>;
   return (
     <div className="bg-white rounded-xl shadow p-6 border">
+      {isPending && <Spinner />}
       {showBrandModal && (
         <BrandModel
           setShowBrandModal={setShowBrandModal}
           editing={editing}
           brand={brand}
-          refetch={refetch}
         />
       )}
       <div className="flex justify-between items-center mb-4">

@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { ShopContext } from "../context/ShopContext";
 export const categoriesService = () => {
-  const { setLoading, backendUrl } = useContext(ShopContext);
+  const { backendUrl } = useContext(ShopContext);
 
   const getAllCategories = async () => {
     try {

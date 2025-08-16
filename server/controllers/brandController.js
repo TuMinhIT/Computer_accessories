@@ -5,7 +5,7 @@ export const getBrands = async (req, res) => {
     const brands = await Brands.find();
     res.send({
       success: true,
-      data: brands,
+      data: brands.reverse(),
     });
   } catch (err) {
     res.send({

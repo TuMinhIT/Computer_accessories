@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { categoriesService } from "../../services/categoriesService";
 import { toast } from "react-toastify";
 import { categoryHooks } from "../../hooks/categoryHooks";
 import Spinner from "../Spinner";

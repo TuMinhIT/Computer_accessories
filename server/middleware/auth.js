@@ -16,7 +16,8 @@ const auth = (req, res, next) => {
 export default auth;
 
 // import jwt from "jsonwebtoken";
-// const auth = async (req, res, next) => {
+
+// const adminAuth = async (req, res, next) => {
 //   try {
 //     const { token } = req.headers;
 
@@ -26,14 +27,24 @@ export default auth;
 //         message: "Unauthorized",
 //       });
 //     }
+
 //     const decode = jwt.verify(token, process.env.JWT_SECRET);
-//     req.body.userId = decode._id;
-//     next();
+
+//     if (decode === process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
+//       next();
+//     } else {
+//       return res.send({
+//         success: false,
+//         message: "Unauthorized",
+//       });
+//     }
 //   } catch (error) {
+//     console.log(error);
 //     return res.send({
 //       success: false,
 //       message: "Unauthorized",
 //     });
 //   }
 // };
-// export default auth;
+
+// export default adminAuth;

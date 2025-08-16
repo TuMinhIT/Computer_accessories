@@ -1,10 +1,9 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
 
 const Sidebar = ({ toggleSidebar }) => {
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    window.location.href = "/";
-  };
+  const { setToken } = useContext(ShopContext);
 
   const close = () => {
     if (toggleSidebar) {
@@ -172,9 +171,9 @@ const Sidebar = ({ toggleSidebar }) => {
                 </span>
               </Link>
             </li>
-            <li onClick={close}>
+            <li onClick={() => setToken("")}>
               <Link
-                to={"/login"}
+                to={"/"}
                 className="flex items-center p-3 rounded-xl hover:bg-blue-50 transition group"
               >
                 <svg
@@ -205,7 +204,3 @@ const Sidebar = ({ toggleSidebar }) => {
 };
 
 export default Sidebar;
-
-//  onClick={() => {
-//   localStorage.removeItem("adminToken");
-//   window.location.href = "/";
