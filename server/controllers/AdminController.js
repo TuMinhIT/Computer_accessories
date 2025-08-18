@@ -20,6 +20,18 @@ export const createDefaultAdmin = async () => {
   }
 };
 
+export const adminProfile = async (req, res) => {
+  try {
+    const admin = req.admin;
+    res.send({
+      success: true,
+      data: admin,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const createStaff = async (req, res) => {
   try {
     const { fullName, email } = req.body;
@@ -98,14 +110,6 @@ export const changePassword = async (req, res) => {
     await user.save();
 
     res.json({ message: "Password changed successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const logout = async (req, res) => {
-  try {
-    res.json({ message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

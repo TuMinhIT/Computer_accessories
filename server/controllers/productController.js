@@ -37,6 +37,14 @@ export const createProduct = async (req, res) => {
         .status(400)
         .json({ success: false, message: "At least one image is required" });
     }
+
+    const existProduct = await Product.findOne({ barcode });
+    if (existProduct) {
+      return res.status(200).send({
+        success: false,
+        message: "Barcode already exist!",
+      });
+    }
     // Upload tất cả ảnh lên Cloudinary song song
     const uploadResults = await Promise.all(
       req.files.map((file) =>

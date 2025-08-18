@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
 export const UserAPI = () => {
-  const { backendUrl } = useContext(ShopContext);
+  const { backendUrl, token, setToken } = useContext(ShopContext);
 
   const resource = "/api/admin";
 
@@ -27,6 +27,29 @@ export const UserAPI = () => {
         backendUrl + resource + "/admin-login",
         data
       );
+      return res.data;
+    } catch (error) {
+      toast.error("Failed: " + (err.message || ""));
+      console.error(err);
+      throw err;
+    }
+  };
+
+  const adminProfile = async () => {
+    try {
+      const res = await axios.post(
+        backendUrl + resource + "/adminProfile",
+        {},
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
+      console.log(res.data);
+      if (!res.data.success) {
+        setToken("");
+      }
       return res.data;
     } catch (error) {
       toast.error("Failed: " + (err.message || ""));
@@ -75,5 +98,6 @@ export const UserAPI = () => {
     updateInfo,
     createUser,
     adminLogin,
+    adminProfile,
   };
 };
