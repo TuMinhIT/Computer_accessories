@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import ProductAdd from "../components/ProductAdd";
 import CustomerInfo from "../components/checkout/CustomerInfo";
 import ReceiptPreview from "../components/checkout/ReceiptPreview";
 

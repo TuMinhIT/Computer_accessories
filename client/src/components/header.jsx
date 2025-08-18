@@ -46,7 +46,7 @@ const Header = () => {
               Home
             </Link>
             <Link
-              to="/product"
+              to="/products"
               className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-600 transition-colors duration-200"
             >
               Products
@@ -145,7 +145,7 @@ const Header = () => {
                 Home
               </Link>
               <Link
-                to="/product"
+                to="/products"
                 onClick={() => setShowMobileMenu(false)}
                 className="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600 transition-colors duration-200"
               >

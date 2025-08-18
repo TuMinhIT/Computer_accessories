@@ -89,10 +89,10 @@ export default function ProfileManager() {
   };
 
   return (
-    <div className="bg-white shadow rounded-2xl h-screen overflow-hidden">
+    <div className="bg-white shadow rounded-2xl hscreen px-10 md:px-30 overflow-hidden">
       <div className="flex flex-col md:flex-row">
         {/* Left column: avatar + quick info */}
-        <div className="md:w-1/3 p-6 bg-gradient-to-b h-screen from-white to-slate-50 border-r">
+        <div className="md:w-1/3 p-6  bg-gradient-to-b  from-white to-slate-50 md:border-r">
           <div className="flex flex-col items-center text-center gap-4">
             <div className="relative">
               <div className="w-36 h-36 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -176,7 +176,7 @@ export default function ProfileManager() {
         </div>
 
         {/* Right column: form */}
-        <form onSubmit={handleSave} className="md:w-2/3 p-6">
+        <form onSubmit={handleSave} className="h-screen md:w-2/3 p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Quản lý thông tin cá nhân</h2>
 

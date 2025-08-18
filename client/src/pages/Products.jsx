@@ -1,12 +1,12 @@
-import ProductCard from "../products/productCard";
-import SubTitle from "../SubTitle";
-import Title from "../Title";
-
-import { ProductService } from "../../services/ProductService";
+import { ProductService } from "../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import Spinner from "../Spinner";
-const Bestseller = () => {
+
+import ProductCard from "../components/products/productCard";
+import Title from "../components/Title";
+import SubTitle from "../components/SubTitle";
+import Spinner from "../components/Spinner";
+const Products = () => {
   const { getAllProducts, getProduct } = ProductService();
   const [bestsellers, setBestsellers] = useState();
 
@@ -22,16 +22,6 @@ const Bestseller = () => {
       setBestsellers(temp);
     }
   }, [products]);
-
-  // Phân loại theo category
-  // const categorizedBestsellers = bestsellers.reduce((acc, product) => {
-  //   if (!acc[product.category]) {
-  //     acc[product.category] = [];
-  //   }
-  //   acc[product.category].push(product);
-  //   return acc;
-  // }, {});
-
   return (
     <div>
       <Title />
@@ -50,4 +40,4 @@ const Bestseller = () => {
   );
 };
 
-export default Bestseller;
+export default Products;

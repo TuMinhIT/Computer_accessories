@@ -1,7 +1,7 @@
 import { assets } from "../../assets/assets";
 const Banner = () => {
   return (
-    <div className="flex flex-col  sm:flex-row border border-gray-600 ">
+    <div className="flex flex-col sm:flex-row border border-gray-600 max-h-130  mt-10">
       <div className="w-full sm:w-1/2 flex items-center justify-center py-10 sm:py-0">
         <div className=" text-gray-900">
           <div className="flex items-center gap-2">
@@ -20,7 +20,11 @@ const Banner = () => {
           </div>
         </div>
       </div>
-      <img src={assets.background1} className="w-full  sm:w-1/2" alt="" />
+      <img
+        src={assets.background1}
+        className="w-full overflow-hidden  sm:w-1/2"
+        alt=""
+      />
     </div>
   );
 };

@@ -1,43 +1,39 @@
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
+
 import Login from "./pages/Login";
 
 import { ToastContainer } from "react-toastify";
-import ProductList from "./components/ProductList";
-import { ShopContext } from "./context.jsx/ShopContext";
-import { useContext } from "react";
 import Routers from "./routers";
-function App() {
-  const { dd } = useContext(ShopContext);
+import { useContext } from "react";
+import { ShopContext } from "./context/ShopContext";
 
+function App() {
+  const { token } = useContext(ShopContext);
   return (
     <>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />{" "}
-        <Routers />
-        <Footer />
-      </div>
-
-      <div>
-        {/* {/* <ProductList /> */}
-        {/* <Login /> */}
-      </div>
+      {token != "" ? (
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          <Routers />
+          <Footer />
+        </div>
+      ) : (
+        <Login />
+      )}
     </>
   );
 }

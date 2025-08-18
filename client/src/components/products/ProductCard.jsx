@@ -6,9 +6,9 @@ const ProductCard = ({ item }) => {
   return (
     <div>
       <div className="w-full bg-white border border-gray-200 rounded-lg hover:scale-105 hover:shadow-lg transition duration-300 ">
-        <ProductCarousel key={item.id} item={item} />
+        <ProductCarousel key={item._id} item={item} />
         <div className="px-5 pb-2 bg-gray-100 flex flex-col gap-4">
-          <Link to={"/product/1"}>
+          <Link to={`products/${item._id}`}>
             <p className="h-12 line-clamp-3 text-base font-semibold text-gray-900 hover:text-blue-900">
               {item.name}
             </p>
@@ -17,7 +17,7 @@ const ProductCard = ({ item }) => {
           <div className="">
             <span className="justify-start flex font-bold text-blue-700">
               {currency}
-              {item.retailPrice}
+              {item.price}
             </span>
           </div>
           <div className="flex-row flex justify-around items-center ">
