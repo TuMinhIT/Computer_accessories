@@ -6,13 +6,22 @@ import { ProductService } from "../../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Spinner from "../Spinner";
+import { CategoryService } from "../../services/CategoryService";
 const Bestseller = () => {
   const { getAllProducts, getProduct } = ProductService();
+  const { getAllCategories } = CategoryService();
+
   const [bestsellers, setBestsellers] = useState();
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: getAllProducts,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getAllCategories,
     staleTime: 1000 * 60 * 5,
   });
 
@@ -23,27 +32,32 @@ const Bestseller = () => {
     }
   }, [products]);
 
-  // Phân loại theo category
-  // const categorizedBestsellers = bestsellers.reduce((acc, product) => {
-  //   if (!acc[product.category]) {
-  //     acc[product.category] = [];
-  //   }
-  //   acc[product.category].push(product);
-  //   return acc;
-  // }, {});
-
   return (
     <div>
-      <Title />
+      <Title text={"BESTSELLER"} />
       {isLoading && <Spinner />}
-      {bestsellers && (
+      {bestsellers && categories && (
         <>
-          <SubTitle text1={"LAPTOP"} text2={"BESTSELLER"} />
-          <div className="pb-20 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-            {bestsellers.map((item) => (
-              <ProductCard key={item._id} item={item} />
-            ))}
-          </div>
+          {categories.map((cate) => {
+            const filteredBestsellers = bestsellers.filter((product) => {
+              return String(product.category._id) === String(cate._id);
+            });
+
+            if (filteredBestsellers.length > 0) {
+              return (
+                <div key={cate._id}>
+                  <SubTitle text1={cate.name} text2={"BESTSELLER"} />
+                  <div className="pb-20 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                    {filteredBestsellers.map((item) => (
+                      <ProductCard key={item._id} item={item} />
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+
+            return null;
+          })}
         </>
       )}
     </div>

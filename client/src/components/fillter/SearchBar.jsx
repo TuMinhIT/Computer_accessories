@@ -13,7 +13,7 @@ const SearchBar = () => {
   };
   return (
     <>
-      <div className="sticky top-0 z-50 backdrop-blur-md bg-white/30 border border-gray-400 px-4 py-3">
+      <div className="sticky top-0 z-50 backdrop-blur-md bg-white/30 border border-gray-400 px-4 py-2">
         <div className="flex flex-row items-center justify-around px-15 py-5">
           <CategoryFillter />
           <div className="flex items-center justify-center border border-gray-700  rounded-full w-2/3 sm:w-1/3">
