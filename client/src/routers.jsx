@@ -12,6 +12,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import ReportPage from "./pages/ReportPage";
 import Transaction from "./pages/transaction";
 import ProfileManager from "./pages/ProfileManager";
+import ChangePassword from "./pages/ChangePassword";
 // import CustomerHistory from "./components/CustomerHistory";
 const Routers = () => {
   return (
@@ -31,6 +32,7 @@ const Routers = () => {
           <Route path="/view-customer" element={<ViewCustomer />} />
           <Route path="/pos" element={<PosPage />} />
           <Route path="/profile" element={<ProfileManager />} />
+          <Route path="/change-password" element={<ChangePassword />} />
         </Routes>
       </main>
     </>

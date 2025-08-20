@@ -1,9 +1,6 @@
 import express from "express";
 import {
   login,
-  createStaff,
-  activateAccount,
-  changePassword,
 } from "../controllers/userController.js";
 
 import { adminProfile } from "../controllers/AdminController.js";

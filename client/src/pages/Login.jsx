@@ -1,15 +1,43 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempted with:", { username, password, remember });
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/employees/login", {
+        email: username,
+        password,
+      });
+
+      if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
+
+        if (remember) {
+          localStorage.setItem("rememberEmail", username);
+        }
+
+        navigate("/");
+      } else if (res.data.forceChangePassword) {
+        localStorage.setItem("pendingEmail", username);
+        toast.warning("You must change your password before using the system");
+        navigate("/change-password");
+      } else {
+        toast.error(res.data.message || "Login failed");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
   };
 
   return (
