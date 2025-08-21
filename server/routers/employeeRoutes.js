@@ -33,6 +33,7 @@ import {
     updateEmployee,
     loginEmployee,
     toggleBlockEmployee,
+    deleteEmployee,
 } from "../controllers/employeeController.js";
 
 const router = express.Router();
@@ -45,6 +46,7 @@ router.post("/login", loginEmployee);
 router.post("/change-password", changeEmployeePassword);
 router.put("/:id", updateEmployee);
 router.put("/:id/toggle-block", toggleBlockEmployee);
+router.delete("/:id", deleteEmployee);
 
 export default router;
 

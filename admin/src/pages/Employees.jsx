@@ -217,6 +217,9 @@ const Employees = () => {
                       prev.map((e) => (e._id === updated._id ? updated : e))
                     );
                   }}
+                  onEmployeeDeleted={(id) => {
+                    setEmployees((prev) => prev.filter((e) => e._id !== id));
+                  }}
                 />
               ))}
             </tbody>
