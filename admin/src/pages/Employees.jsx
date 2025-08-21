@@ -157,7 +157,7 @@ const Employees = () => {
       {showAddModal && (
         <AddEmployeeModal
           setShowAddModal={setShowAddModal}
-          onEmployeeAdded={fetchEmployees} // sau khi add thì reload list
+          onEmployeeAdded={fetchEmployees}
         />
       )}
 
@@ -211,20 +211,16 @@ const Employees = () => {
               {employees.map((emp) => (
                 <EmployeeRow
                   key={emp._id}
-                  emp={{
-                    id: emp._id,
-                    avatar: assets.user_img,
-                    username: emp.name,
-                    email: emp.email,
-                    phone: emp.phone,
-                    active: emp.isActive,
-                    createAt: new Date(emp.createdAt).toISOString().split("T")[0],
-                    locked: false,
-                    salary: emp.salary,
+                  emp={{ ...emp, avatar: assets.user_img }}
+                  onEmployeeUpdated={(updated) => {
+                    setEmployees((prev) =>
+                      prev.map((e) => (e._id === updated._id ? updated : e))
+                    );
                   }}
                 />
               ))}
             </tbody>
+
           </table>
         </div>
       </div>

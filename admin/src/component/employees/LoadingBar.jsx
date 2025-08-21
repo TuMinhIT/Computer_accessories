@@ -12,7 +12,7 @@ const LoadingBar = () => {
         }
         return prev + 1;
       });
-    }, 600); // 600ms x 100 lần = 60.000ms = 1 phút
+    }, 600);
 
     return () => clearInterval(interval);
   }, []);

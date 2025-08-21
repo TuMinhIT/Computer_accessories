@@ -219,3 +219,25 @@ export const changeEmployeePassword = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
+export const updateEmployee = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, phone, salary } = req.body;
+
+        const employee = await Employee.findByIdAndUpdate(
+            id,
+            { name, email, phone, salary },
+            { new: true }
+        );
+
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
+        }
+
+        res.json({ success: true, message: "Employee updated successfully", data: employee });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

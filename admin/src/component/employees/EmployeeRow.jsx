@@ -3,7 +3,7 @@ import { assets } from "../../assets/assets";
 import EditEmployeeModal from "./EditEmployeeModal";
 import { toast } from "react-toastify";
 import LoadingBar from "./LoadingBar";
-const EmployeeRow = ({ emp }) => {
+const EmployeeRow = ({ emp, onEmployeeUpdated }) => {
   const [empData, setEmpData] = useState(emp);
   const currency = "$";
   const [showEditModal, setShowEditModal] = useState(false);
@@ -25,8 +25,11 @@ const EmployeeRow = ({ emp }) => {
         <EditEmployeeModal
           empData={empData}
           setEmpData={setEmpData}
-          onSave={onSave}
           setShowEditModal={setShowEditModal}
+          onSave={(updated) => {
+            setEmpData(updated);
+            onEmployeeUpdated(updated);
+          }}
         />
       )}
 
@@ -50,7 +53,7 @@ const EmployeeRow = ({ emp }) => {
             />
             <div>
               <div className="text-sm font-medium text-gray-900">
-                {emp.username}
+                {emp.name}
               </div>
               <div className="text-sm text-gray-500">{emp.email}</div>
             </div>
@@ -61,11 +64,13 @@ const EmployeeRow = ({ emp }) => {
           {emp.salary.toLocaleString()}
           {currency}
         </td>
-        <td className="px-6 py-4">{emp.createAt}</td>
+        <td className="px-6 py-4">
+          {new Date(empData.createdAt).toISOString().split("T")[0]}
+        </td>
+
         <td className="px-6 py-4 text-sm ">
           <div className="p-2 rounded-full hover:bg-gray-100 w-10 relative group">
             <img src={assets.more_vert} alt="" />
-            {/* Dropdown menu hiển thị khi hover group */}
             <div
               id="dropdownDivider"
               className="z-10 absolute  top-8 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 hidden group-hover:block"
