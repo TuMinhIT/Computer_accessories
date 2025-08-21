@@ -14,6 +14,8 @@ import Transaction from "./pages/transaction";
 import ProfileManager from "./pages/ProfileManager";
 import ChangePassword from "./pages/ChangePassword";
 // import CustomerHistory from "./components/CustomerHistory";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 const Routers = () => {
   return (
     <>
@@ -33,6 +35,8 @@ const Routers = () => {
           <Route path="/pos" element={<PosPage />} />
           <Route path="/profile" element={<ProfileManager />} />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </main>
     </>

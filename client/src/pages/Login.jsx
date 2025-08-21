@@ -154,9 +154,10 @@ function Login() {
                   Remember me
                 </label>
               </div>
-              <a href="#" className="text-base text-indigo-600 hover:underline">
+              <Link to="/forgot-password" className="text-base text-indigo-600 hover:underline">
                 Forgot Password?
-              </a>
+              </Link>
+
             </motion.div>
             <motion.button
               type="submit"

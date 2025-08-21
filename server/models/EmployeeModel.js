@@ -9,7 +9,11 @@ const employeeSchema = new mongoose.Schema(
         isActive: { type: Boolean, default: false },
         mustChangePassword: { type: Boolean, default: true },
         password: { type: String, required: true },
-        locked: { type: Boolean, default: false }
+        locked: { type: Boolean, default: false },
+        resetPasswordToken: { type: String },
+        resetPasswordExpire: { type: Date }
+
+
     },
     { timestamps: true }
 );

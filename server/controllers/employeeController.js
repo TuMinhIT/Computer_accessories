@@ -1,46 +1,9 @@
 import Employee from "../models/EmployeeModel.js";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import sendEmail from "../utils/sendEmail.js";
 
-const sendEmail = async (to, subject, link) => {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-        },
-    });
-
-    const htmlContent = `
-    <div style="font-family: Arial, sans-serif; background-color:#f4f4f7; padding:30px; text-align:center;">
-      <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-        <h2 style="color:#333;">👋 Welcome to Our System</h2>
-        <p style="font-size:16px; color:#555;">
-          Your employee account has been created. Please activate your account within <b>1 minute</b>.
-        </p>
-        
-        <a href="${link}" 
-          style="display:inline-block; margin:20px 0; padding:12px 24px; background:#2563eb; color:white; text-decoration:none; border-radius:6px; font-size:16px;">
-          ✅ Activate Account
-        </a>
-
-        <hr style="margin:30px 0; border:0; border-top:1px solid #eee;" />
-
-        <p style="font-size:12px; color:#aaa;">
-          © ${new Date().getFullYear()} Company Inc. All rights reserved.
-        </p>
-      </div>
-    </div>
-  `;
-
-    await transporter.sendMail({
-        from: `"HR Department" <${process.env.EMAIL_USER}>`,
-        to,
-        subject,
-        html: htmlContent,
-    });
-};
 
 export const addEmployee = async (req, res) => {
     try {
@@ -66,8 +29,7 @@ export const addEmployee = async (req, res) => {
         );
 
         const link = `http://localhost:5000/api/employees/activate/${token}`;
-
-        await sendEmail(email, "Employee Account Activation", link);
+        await sendEmail(email, "Employee Account Activation", link, "activation");
 
         res.json({ success: true, message: "Employee added & email sent", data: employee });
     } catch (error) {
@@ -75,9 +37,9 @@ export const addEmployee = async (req, res) => {
     }
 };
 
+
 export const activateEmployee = async (req, res) => {
     const { token } = req.params;
-
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const employee = await Employee.findOne({ email: new RegExp(`^${decoded.email}$`, "i") });
@@ -90,36 +52,20 @@ export const activateEmployee = async (req, res) => {
         await employee.save();
 
         return res.send(`
-      <html>
-        <head><title>Activation Success</title></head>
-        <body style="font-family: Arial; text-align:center; margin-top:100px; background:#f9fafb;">
-          <div style="background:white; border:1px solid #ddd; padding:30px; border-radius:8px; display:inline-block; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+          <html><body style="text-align:center;margin-top:100px;">
             <h1 style="color:green;">✅ Employee activated successfully</h1>
             <p>You can now login to the system.</p>
-          </div>
-        </body>
-      </html>
-    `);
+          </body></html>
+        `);
     } catch (error) {
         const decoded = jwt.decode(token);
-
         return res.send(`
-      <html>
-        <head><title>Activation Failed</title></head>
-        <body style="font-family: Arial; text-align:center; margin-top:100px; background:#fef2f2;">
-          <div style="background:white; border:1px solid #fca5a5; padding:30px; border-radius:8px; display:inline-block; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+          <html><body style="text-align:center;margin-top:100px;">
             <h1 style="color:red;">❌ Invalid or Expired Token</h1>
             <p>Your activation link has expired.</p>
-            ${decoded?.email
-                ? `<a class="button" href="/api/employees/resend-activation?email=${decoded.email}" 
-                     style="display:inline-block; margin-top:20px; padding:12px 24px; background:#2563eb; color:white; text-decoration:none; border-radius:6px; font-size:14px;">
-                     🔄 Resend Activation Email</a>`
-                : ""
-            }
-          </div>
-        </body>
-      </html>
-    `);
+            ${decoded?.email ? `<a href="/api/employees/resend-activation?email=${decoded.email}">Resend Activation</a>` : ""}
+          </body></html>
+        `);
     }
 };
 
@@ -129,22 +75,12 @@ export const resendActivation = async (req, res) => {
         const { email } = req.query;
         const employee = await Employee.findOne({ email });
 
-        if (!employee) {
-            return res.send("<h1>❌ Employee not found</h1>");
-        }
+        if (!employee) return res.send("<h1>❌ Employee not found</h1>");
+        if (employee.isActive) return res.send("<h1>✅ Account already activated</h1>");
 
-        if (employee.isActive) {
-            return res.send("<h1>✅ Account already activated</h1>");
-        }
-
-        const token = jwt.sign(
-            { email: employee.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1m" }
-        );
-
+        const token = jwt.sign({ email: employee.email }, process.env.JWT_SECRET, { expiresIn: "1m" });
         const link = `http://localhost:5000/api/employees/activate/${token}`;
-        await sendEmail(employee.email, "Resend Employee Account Activation", link);
+        await sendEmail(employee.email, "Resend Employee Account Activation", link, "activation");
 
         res.send("<h1>📧 New activation email sent. Please check your inbox.</h1>");
     } catch (error) {
@@ -162,58 +98,39 @@ export const getEmployees = async (req, res) => {
     }
 };
 
+
 export const loginEmployee = async (req, res) => {
     try {
         const { email, password } = req.body;
-
         const employee = await Employee.findOne({ email });
-        if (!employee) {
-            return res.json({ success: false, message: "Employee not found" });
-        }
 
-        if (!employee.isActive) {
-            return res.json({ success: false, message: "Account not activated" });
-        }
+        if (!employee) return res.json({ success: false, message: "Employee not found" });
+        if (!employee.isActive) return res.json({ success: false, message: "Account not activated" });
+        if (employee.locked) return res.json({ success: false, message: "Account is blocked by admin" });
 
         const isMatch = await bcrypt.compare(password, employee.password);
-        if (!isMatch) {
-            return res.json({ success: false, message: "Invalid password" });
-        }
-        if (employee.locked) {
-            return res.json({ success: false, message: "Account is blocked by admin" });
-        }
+        if (!isMatch) return res.json({ success: false, message: "Invalid password" });
 
         if (employee.mustChangePassword) {
-            return res.json({
-                success: false,
-                forceChangePassword: true,
-                message: "Please change your password before accessing the system",
-            });
+            return res.json({ success: false, forceChangePassword: true, message: "Please change your password before accessing the system" });
         }
 
-        const token = jwt.sign(
-            { id: employee._id, role: "employee" },
-            process.env.JWT_SECRET,
-            { expiresIn: "2h" }
-        );
-
+        const token = jwt.sign({ id: employee._id, role: "employee" }, process.env.JWT_SECRET, { expiresIn: "2h" });
         res.json({ success: true, token });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
+
 export const changeEmployeePassword = async (req, res) => {
     try {
         const { email, newPassword } = req.body;
-
         const employee = await Employee.findOne({ email });
-        if (!employee) {
-            return res.json({ success: false, message: "Employee not found" });
-        }
 
-        const hashed = await bcrypt.hash(newPassword, 10);
-        employee.password = hashed;
+        if (!employee) return res.json({ success: false, message: "Employee not found" });
+
+        employee.password = await bcrypt.hash(newPassword, 10);
         employee.mustChangePassword = false;
         await employee.save();
 
@@ -229,15 +146,8 @@ export const updateEmployee = async (req, res) => {
         const { id } = req.params;
         const { name, email, phone, salary } = req.body;
 
-        const employee = await Employee.findByIdAndUpdate(
-            id,
-            { name, email, phone, salary },
-            { new: true }
-        );
-
-        if (!employee) {
-            return res.status(404).json({ success: false, message: "Employee not found" });
-        }
+        const employee = await Employee.findByIdAndUpdate(id, { name, email, phone, salary }, { new: true });
+        if (!employee) return res.status(404).json({ success: false, message: "Employee not found" });
 
         res.json({ success: true, message: "Employee updated successfully", data: employee });
     } catch (error) {
@@ -250,10 +160,7 @@ export const toggleBlockEmployee = async (req, res) => {
     try {
         const { id } = req.params;
         const employee = await Employee.findById(id);
-
-        if (!employee) {
-            return res.status(404).json({ success: false, message: "Employee not found" });
-        }
+        if (!employee) return res.status(404).json({ success: false, message: "Employee not found" });
 
         employee.locked = !employee.locked;
         await employee.save();
@@ -269,10 +176,7 @@ export const deleteEmployee = async (req, res) => {
     try {
         const { id } = req.params;
         const employee = await Employee.findByIdAndDelete(id);
-
-        if (!employee) {
-            return res.status(404).json({ success: false, message: "Employee not found" });
-        }
+        if (!employee) return res.status(404).json({ success: false, message: "Employee not found" });
 
         res.status(200).json({ success: true, message: "Employee deleted" });
     } catch (error) {
@@ -281,3 +185,49 @@ export const deleteEmployee = async (req, res) => {
 };
 
 
+export const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const employee = await Employee.findOne({ email });
+        if (!employee) return res.json({ success: false, message: "Email not found" });
+
+        const resetToken = crypto.randomBytes(32).toString("hex");
+        const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+        employee.resetPasswordToken = hashedToken;
+        employee.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+        await employee.save();
+
+        const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+        await sendEmail(employee.email, "Password Reset Request", resetLink, "forgot");
+
+        res.json({ success: true, message: "Password reset link sent to email" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+
+export const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { newPassword } = req.body;
+
+        const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+        const employee = await Employee.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
+
+        if (!employee) return res.json({ success: false, message: "Invalid or expired token" });
+
+        employee.password = await bcrypt.hash(newPassword, 10);
+        employee.resetPasswordToken = undefined;
+        employee.resetPasswordExpire = undefined;
+
+        await employee.save();
+        res.json({ success: true, message: "Password reset successful" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
