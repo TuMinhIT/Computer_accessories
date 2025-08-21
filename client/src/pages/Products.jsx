@@ -1,16 +1,12 @@
 import { ProductService } from "../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-
 import ProductCard from "../components/products/productCard";
-import Title from "../components/Title";
 import SubTitle from "../components/SubTitle";
 import Spinner from "../components/Spinner";
 import { CategoryService } from "../services/CategoryService";
 import SearchBar from "../components/fillter/SearchBar";
 const Products = () => {
   const { getAllProducts, getProduct } = ProductService();
-  const [bestsellers, setBestsellers] = useState();
   const { getAllCategories } = CategoryService();
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
