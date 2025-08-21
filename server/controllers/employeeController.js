@@ -179,6 +179,9 @@ export const loginEmployee = async (req, res) => {
         if (!isMatch) {
             return res.json({ success: false, message: "Invalid password" });
         }
+        if (employee.locked) {
+            return res.json({ success: false, message: "Account is blocked by admin" });
+        }
 
         if (employee.mustChangePassword) {
             return res.json({
@@ -241,3 +244,23 @@ export const updateEmployee = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
+export const toggleBlockEmployee = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const employee = await Employee.findById(id);
+
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
+        }
+
+        employee.locked = !employee.locked;
+        await employee.save();
+
+        res.json({ success: true, message: employee.locked ? "Employee blocked" : "Employee unblocked", data: employee });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+

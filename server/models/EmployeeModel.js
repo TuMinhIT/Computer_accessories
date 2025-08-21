@@ -8,7 +8,8 @@ const employeeSchema = new mongoose.Schema(
         salary: { type: Number, required: true },
         isActive: { type: Boolean, default: false },
         mustChangePassword: { type: Boolean, default: true },
-        password: { type: String, required: true }
+        password: { type: String, required: true },
+        locked: { type: Boolean, default: false }
     },
     { timestamps: true }
 );
