@@ -61,13 +61,32 @@ export const UserService = () => {
       const res = await axios.post(backendUrl + resource + "forgot-password", {
         email,
       });
+
+      return res.data;
+    } catch (err) {
+      console.log(err.message);
+      toast.error(err.message);
+    }
+  };
+
+  const resetPassword = async ({ otpToken, otp, newPassword }) => {
+    try {
+      const res = await axios.post(backendUrl + resource + "reset-password", {
+        otpToken,
+        otp,
+        newPassword,
+      });
       if (res.data.success) {
-        toast.success("Check your email for reset link!");
+        toast.success(
+          "Change password successfully, now login with new password!"
+        );
+        navigate("/login");
       } else {
         toast.error(res.data.message);
       }
     } catch (err) {
-      toast.error("Something went wrong");
+      console.log(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -108,5 +127,6 @@ export const UserService = () => {
     changePassword,
     adminProfile,
     forgotPassword,
+    resetPassword,
   };
 };
