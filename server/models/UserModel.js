@@ -8,9 +8,13 @@ const userSchema = new mongoose.Schema(
     avatar: { type: String, default: "" },
     password: { type: String, required: true },
     role: { type: String, enum: ["admin", "staff"], default: "staff" },
-    isLocked: { type: Boolean, default: false },
+    phone: { type: String, required: false },
+    salary: { type: Number, required: true },
     isActive: { type: Boolean, default: false },
-    firstLogin: { type: Boolean, default: true },
+    mustChangePassword: { type: Boolean, default: true },
+    locked: { type: Boolean, default: false },
+    resetPasswordToken: { type: String },
+    resetPasswordExpire: { type: Date },
   },
   { timestamps: true }
 );

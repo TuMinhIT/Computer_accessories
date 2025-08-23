@@ -1,21 +1,19 @@
 import mongoose from "mongoose";
 
 const employeeSchema = new mongoose.Schema(
-    {
-        name: { type: String, required: true },
-        email: { type: String, required: true, unique: true },
-        phone: { type: String, required: true },
-        salary: { type: Number, required: true },
-        isActive: { type: Boolean, default: false },
-        mustChangePassword: { type: Boolean, default: true },
-        password: { type: String, required: true },
-        locked: { type: Boolean, default: false },
-        resetPasswordToken: { type: String },
-        resetPasswordExpire: { type: Date }
-
-
-    },
-    { timestamps: true }
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
+    salary: { type: Number, required: true },
+    isActive: { type: Boolean, default: false },
+    mustChangePassword: { type: Boolean, default: true },
+    password: { type: String, required: true },
+    locked: { type: Boolean, default: false },
+    resetPasswordToken: { type: String },
+    resetPasswordExpire: { type: Date },
+  },
+  { timestamps: true }
 );
 
 export default mongoose.model("Employee", employeeSchema);

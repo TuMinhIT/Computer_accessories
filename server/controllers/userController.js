@@ -1,89 +1,338 @@
-import User from "../models/UserModel.js";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-// import nodemailer from "nodemailer";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import sendEmail from "../utils/sendEmail.js";
+import User from "../models/UserModel.js";
 
-export const createDefaultAdmin = async () => {
-  const admin = await User.findOne({ username: "admin" });
-  if (!admin) {
-    const hashedPassword = await bcrypt.hash("admin", 10);
-    await User.create({
-      username: "admin",
-      email: "admin@gmail.com",
-      fullName: "Administrator",
+const addUser = async (req, res) => {
+  try {
+    const { name, email, phone, salary } = req.body;
+
+    const defaultPassword = email.split("@")[0];
+    const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+
+    const existedUser = await User.findOne({ email: email });
+    if (existedUser)
+      return res.send({
+        success: false,
+        message: "User already existed!",
+      });
+
+    const user = await User.create({
+      username: defaultPassword,
+      fullName: name,
+      email,
+      phone,
+      salary,
       password: hashedPassword,
-      role: "admin",
-      isActive: true,
-      firstLogin: false,
+      isActive: false,
+      mustChangePassword: true,
     });
-    console.log("Default admin created: admin/admin");
+
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "1m",
+    });
+
+    const link = `http://localhost:5000/api/users/activate/${token}`;
+    await sendEmail(email, "User Account Activation", link, "activation");
+
+    res.json({
+      success: true,
+      message: "User added & email sent",
+      data: user,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const login = async (req, res) => {
+const activateUser = async (req, res) => {
+  const { token } = req.params;
   try {
-    const { username, password } = req.body;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      return res.send("<h1>❌ User not found</h1>");
+    }
+
+    user.isActive = true;
+    await user.save();
+
+    return res.send(`
+          <html><body style="text-align:center;margin-top:100px;">
+            <h1 style="color:green;">✅ User activated successfully</h1>
+            <p>You can now login to the system.</p>
+          </body></html>
+        `);
+  } catch (error) {
+    console.log(error.message);
+    return res.send(`
+  <html>
+    <head>
+      <title>Token Expired</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          margin-top: 100px;
+        }
+        h1 {
+          color: red;
+        }
+        p {
+          font-size: 16px;
+          color: #333;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>❌ Invalid or Expired Token</h1>
+      <p>Request time has expired. Please contact Admin for support..</p>
+    </body>
+  </html>
+`);
+  }
+};
+
+const resendActivation = async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
+    const user = await User.findOne({ email });
 
     if (!user)
       return res.send({
         success: false,
         message: "User not found",
       });
-
-    if (user.isLocked)
+    if (user.isActive)
       return res.send({
         success: false,
-        message: "Account locked",
+        message: "Account already activated",
       });
 
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "2m",
+    });
+    const link = `http://localhost:5000/api/users/activate/${token}`;
+    await sendEmail(
+      user.email,
+      "Resend User Account Activation",
+      link,
+      "activation"
+    );
+    return res.send({
+      success: true,
+      message: "📧 New activation email sent. Please check your inbox.",
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send(error.message);
+  }
+};
+
+const getUsers = async (req, res) => {
+  try {
+    const Users = await User.find({ role: { $ne: "admin" } }).sort({
+      createdAt: -1,
+    });
+
+    res.json({ success: true, data: Users });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findByIdAndDelete(id);
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    res.status(200).json({ success: true, message: "User deleted" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const loginUser = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) return res.json({ success: false, message: "User not found" });
     if (!user.isActive)
-      return res.send({
+      return res.json({ success: false, message: "Account not activated" });
+    if (user.locked)
+      return res.json({
         success: false,
-        message: "Please contact admin to activate your account!",
+        message: "Account is blocked by admin",
       });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
-      return res.send({
-        success: false,
-        message: "Invalid password",
-      });
-
-    if (user.firstLogin && user.role === "staff") {
-      return res.send({
-        success: false,
-        message: "Please change password before accessing system",
-      });
-    }
+      return res.json({ success: false, message: "Invalid password" });
 
     const token = jwt.sign(
       { username: user.username, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "2h" }
+      { expiresIn: "3h" }
     );
-    res.send({
+
+    if (user.mustChangePassword) {
+      return res.json({
+        success: true,
+        token,
+        forceChangePassword: true,
+      });
+    }
+    res.json({
       success: true,
       token,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-
-
-
-
-
-
-
-
-export const logout = async (req, res) => {
+const changeUserPassword = async (req, res) => {
   try {
-    res.json({ message: "Logged out successfully" });
+    const { username, newPassword } = req.body;
+
+    const user = await User.findOne({ username });
+
+    if (!user) return res.json({ success: false, message: "User not found" });
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.mustChangePassword = false;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password changed successfully. You can now login.",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fullName, phone, salary } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { fullName, phone, salary },
+      { new: true }
+    );
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    res.json({
+      success: true,
+      message: "User updated successfully",
+      data: user,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const toggleBlockUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user)
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found" });
+
+    user.locked = !user.locked;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: user.locked ? "User blocked" : "User unblocked",
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const User = await User.findOne({ email });
+    if (!User) return res.json({ success: false, message: "Email not found" });
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    User.resetPasswordToken = hashedToken;
+    User.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+    await User.save();
+
+    const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+    await sendEmail(User.email, "Password Reset Request", resetLink, "forgot");
+
+    res.json({ success: true, message: "Password reset link sent to email" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const User = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!User)
+      return res.json({ success: false, message: "Invalid or expired token" });
+
+    User.password = await bcrypt.hash(newPassword, 10);
+    User.resetPasswordToken = undefined;
+    User.resetPasswordExpire = undefined;
+
+    await User.save();
+    res.json({ success: true, message: "Password reset successful" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export default {
+  addUser,
+  activateUser,
+  resendActivation,
+  getUsers,
+  loginUser,
+  changeUserPassword,
+  updateUser,
+  toggleBlockUser,
+  deleteUser,
+  forgotPassword,
+  resetPassword,
 };

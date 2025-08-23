@@ -1,18 +1,19 @@
 import nodemailer from "nodemailer";
 
 const sendEmail = async (to, subject, link, type = "activation") => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-  let htmlContent = "";
+    let htmlContent = "";
 
-  if (type === "activation") {
-    htmlContent = `
+    if (type === "activation") {
+      htmlContent = `
       <div style="font-family: Arial, sans-serif; background-color:#f4f4f7; padding:30px; text-align:center;">
         <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
           <h2 style="color:#333;">👋 Chào mừng đến với Hệ thống của chúng tôi</h2>
@@ -28,8 +29,8 @@ const sendEmail = async (to, subject, link, type = "activation") => {
         </div>
       </div>
     `;
-  } else if (type === "forgot") {
-    htmlContent = `
+    } else if (type === "forgot") {
+      htmlContent = `
       <div style="font-family: Arial, sans-serif; background-color:#f4f4f7; padding:30px; text-align:center;">
         <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
           <h2 style="color:#333;">🔑 Yêu cầu đặt lại mật khẩu</h2>
@@ -46,14 +47,18 @@ const sendEmail = async (to, subject, link, type = "activation") => {
         </div>
       </div>
     `;
-  }
+    }
 
-  await transporter.sendMail({
-    from: `"HR Department" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html: htmlContent,
-  });
+    await transporter.sendMail({
+      from: `"HR Department" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html: htmlContent,
+    });
+    console.log("send to " + to);
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 export default sendEmail;

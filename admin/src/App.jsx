@@ -13,10 +13,6 @@ export default function App() {
       ) : (
         <Route path="/*" element={<DashboardLayout />} />
       )}
-      {/* <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/create-staff" element={<CreateStaff />} />
-        <Route path="/staff-home" element={<StaffHomepage />} /> */}
-
       <Route path="*" element={<LoginPage />} />
     </Routes>
   );

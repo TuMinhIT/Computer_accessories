@@ -13,7 +13,6 @@ const adminAuth = async (req, res, next) => {
     }
 
     const decode = jwt.verify(token, process.env.JWT_SECRET);
-
     //
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {

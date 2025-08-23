@@ -1,7 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 
-const ConfirmModal = ({ title, message, onConfirm, setShowConfirmModal }) => {
+const ConfirmModal = ({ title, message, onConfirm, onCancel }) => {
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
@@ -10,7 +10,7 @@ const ConfirmModal = ({ title, message, onConfirm, setShowConfirmModal }) => {
         <div className="flex justify-end gap-3">
           <button
             className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-            onClick={() => setShowConfirmModal(false)}
+            onClick={onCancel}
           >
             Cancel
           </button>

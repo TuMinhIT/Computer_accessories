@@ -1,5 +1,8 @@
+import { useContext } from "react";
 import { Link } from "react-router";
+import { ShopContext } from "../context/ShopContext";
 const HeaderDropdown = () => {
+  const { setToken } = useContext(ShopContext);
   return (
     <div className="absolute right-0 top-full mt-2 z-50">
       <div className="bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-48 border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
@@ -76,7 +79,8 @@ const HeaderDropdown = () => {
         </ul>
         <div className="py-1">
           <Link
-            href="#"
+            onClick={() => setToken("")}
+            to={"/login"}
             className="flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-gray-600 transition-colors duration-200"
           >
             <svg

@@ -7,7 +7,7 @@ const ShopContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
-
+  const currency = "$";
   useEffect(() => {
     if (token === "") {
       localStorage.removeItem("token");
@@ -22,6 +22,7 @@ const ShopContextProvider = ({ children }) => {
     setLoading,
     backendUrl,
     navigate,
+    currency,
   };
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 };

@@ -30,14 +30,3 @@ export const assets = {
   more_vert,
   arrow_back,
 };
-
-import screen1 from "./producstImage/screen1.webp";
-import screen2 from "./producstImage/screen2.webp";
-import screen3 from "./producstImage/screen3.webp";
-import screen4 from "./producstImage/screen4.webp";
-export const productImages = {
-  screen1,
-  screen2,
-  screen3,
-  screen4,
-};

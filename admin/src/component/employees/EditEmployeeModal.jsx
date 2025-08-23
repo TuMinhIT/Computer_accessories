@@ -1,39 +1,40 @@
-import React from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
-import axios from "axios";
+import { UserHooks } from "../../hooks/userHoocks";
 import { toast } from "react-toastify";
+import Spinner from "../Spinner";
+const EditEmployeeModal = ({ empData, setShowEditModal }) => {
+  const [emp, setEmp] = useState(empData);
+  if (!empData) return null;
 
-const EditEmployeeModal = ({ empData, setEmpData, onSave, setShowEditModal }) => {
   const onChange = (e) => {
-    setEmpData({ ...empData, [e.target.name]: e.target.value });
+    setEmp({ ...empData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
+  const { useUpdateUser } = UserHooks();
+  const { mutate, isPending } = useUpdateUser();
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+
     try {
-      if (!empData._id) {
-        toast.error("❌ Missing employee ID");
-        return;
-      }
-
-      const res = await axios.put(
-        `http://localhost:5000/api/employees/${empData._id}`,
-        empData
+      mutate(
+        { data: emp },
+        {
+          onSuccess: (res) => {
+            if (res.success) {
+              toast.success("Update successfully!");
+              setShowEditModal(false);
+            } else {
+              toast.error(res.message);
+            }
+          },
+        }
       );
-
-      if (res.data.success) {
-        toast.success("Employee updated successfully");
-        onSave(res.data.data);
-        setShowEditModal(false);
-      } else {
-        toast.error(res.data.message);
-      }
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed");
     }
   };
-
-
-  if (!empData) return null;
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
@@ -44,23 +45,16 @@ const EditEmployeeModal = ({ empData, setEmpData, onSave, setShowEditModal }) =>
       />
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md p-6 z-10">
         <h2 className="text-lg font-bold mb-4">Edit Employee</h2>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setShowEditModal(false);
-            handleSave();
-          }}
-          className="space-y-4"
-        >
+        {isPending && <Spinner />}
+        <form onSubmit={handleSave} className="space-y-4">
           {/* name */}
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label className="block text-sm font-medium mb-1">Full Name</label>
             <input
               type="text"
-              name="name"
-              value={empData.name || ""}
+              name="fullName"
               onChange={onChange}
+              value={emp.fullName || ""}
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
               required
             />
@@ -72,11 +66,10 @@ const EditEmployeeModal = ({ empData, setEmpData, onSave, setShowEditModal }) =>
             <input
               type="email"
               name="email"
-              value={empData.email || ""}
+              value={emp.email || ""}
               readOnly
               className="w-full border rounded px-3 py-2 bg-gray-100 text-gray-500 cursor-not-allowed"
             />
-
           </div>
 
           {/* phone */}
@@ -85,7 +78,7 @@ const EditEmployeeModal = ({ empData, setEmpData, onSave, setShowEditModal }) =>
             <input
               type="text"
               name="phone"
-              value={empData.phone || ""}
+              value={emp.phone || ""}
               onChange={onChange}
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
               required
@@ -98,7 +91,7 @@ const EditEmployeeModal = ({ empData, setEmpData, onSave, setShowEditModal }) =>
             <input
               type="number"
               name="salary"
-              value={empData.salary || ""}
+              value={emp.salary || ""}
               onChange={onChange}
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
               required

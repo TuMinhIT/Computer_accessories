@@ -5,23 +5,22 @@ import { assets } from "../assets/assets";
 import { UserHooks } from "../hooks/userHoocks";
 import { ShopContext } from "../context/ShopContext";
 import { toast, ToastContainer } from "react-toastify";
+import Spinner from "../component/Spinner";
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const { navigate, token, setToken } = useContext(ShopContext);
+  const { setToken } = useContext(ShopContext);
 
   const { useLogin } = UserHooks();
   const { mutate, isPending, error } = useLogin();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     mutate(
       { username, password },
       {
         onSuccess: (res) => {
-          console.log(res);
           if (res.success) {
             setToken(res.token);
           } else {
@@ -30,19 +29,12 @@ const LoginPage = () => {
         },
       }
     );
-
-    // const msg = error.response?.data?.message;
-    // if (msg === "Please change password before accessing system") {
-    //   localStorage.setItem("pendingUsername", username);
-    //   navigate("/change-password");
-    // } else {
-    //   alert(msg || "Login failed");
-    // }
   };
 
   return (
     <>
       <ToastContainer />
+      {isPending && <Spinner />}
       <div
         className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
         style={{ backgroundImage: `url(${assets.loginBg})` }}
@@ -61,6 +53,7 @@ const LoginPage = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                 placeholder="your@email.com"
                 value={username}
+                required
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
@@ -71,6 +64,7 @@ const LoginPage = () => {
               </label>
               <input
                 type="password"
+                required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                 placeholder="••••••••"
                 value={password}
