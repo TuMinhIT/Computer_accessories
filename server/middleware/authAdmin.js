@@ -3,44 +3,30 @@ import User from "../models/UserModel.js";
 
 const adminAuth = async (req, res, next) => {
   try {
-    const admin = await User.findOne({ role: "admin" });
     const { token } = req.headers;
     if (!token) {
-      return res.send({
-        success: false,
-        message: "Unauthorized",
-      });
+      return res.status(401).json({ success: false, message: "No token provided" });
     }
 
-    const decode = jwt.verify(token, process.env.JWT_SECRET);
-    //
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (decode.role === admin.role) {
-        req.admin = admin;
-        next();
-      } else {
-        return res.send({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err) {
         if (err.name === "TokenExpiredError") {
-          return res.send({
-            success: false,
-            message: "Token Expired Error",
-          });
+          return res.status(401).json({ success: false, message: "Token expired" });
         }
-        return res.status(403).json({ message: "Invalid token" });
+        return res.status(403).json({ success: false, message: "Invalid token" });
       }
+
+      const admin = await User.findOne({ role: "admin" });
+      if (!admin || decoded.role !== "admin") {
+        return res.status(403).json({ success: false, message: "Unauthorized" });
+      }
+
+      req.admin = admin; 
+      next();
     });
   } catch (error) {
-    console.log(error);
-    return res.send({
-      success: false,
-      message: "Unauthorized",
-    });
+    console.error("Auth error:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 

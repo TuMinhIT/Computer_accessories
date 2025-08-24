@@ -168,19 +168,28 @@ const deleteUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user) return res.json({ success: false, message: "User not found" });
-    if (!user.isActive)
+
+    const user = await User.findOne({
+      $or: [{ username }, { email: username }],
+    });
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+    if (!user.isActive) {
       return res.json({ success: false, message: "Account not activated" });
-    if (user.locked)
+    }
+    if (user.locked) {
       return res.json({
         success: false,
         message: "Account is blocked by admin",
       });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    if (!isMatch) {
       return res.json({ success: false, message: "Invalid password" });
+    }
 
     const token = jwt.sign(
       { username: user.username, role: user.role },
@@ -195,6 +204,7 @@ const loginUser = async (req, res) => {
         forceChangePassword: true,
       });
     }
+
     res.json({
       success: true,
       token,
@@ -204,11 +214,14 @@ const loginUser = async (req, res) => {
   }
 };
 
+
 const changeUserPassword = async (req, res) => {
   try {
     const { username, newPassword } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({
+      $or: [{ username }, { email: username }],
+    });
 
     if (!user) return res.json({ success: false, message: "User not found" });
 
@@ -224,6 +237,7 @@ const changeUserPassword = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 const updateUser = async (req, res) => {
   try {
@@ -281,7 +295,6 @@ const forgotPassword = async (req, res) => {
 
     const OTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-    //  Gửi OTP qua mail
     await sendEmail(user.email, "Password Reset Request", OTP, "forgot");
 
     const otpToken = jwt.sign(
