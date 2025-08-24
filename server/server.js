@@ -15,11 +15,12 @@ import cors from "cors";
 dotenv.config();
 const app = express();
 
+app.use(cors({ origin: "*" }));
 connectDB().then(AdminController.createDefaultAdmin);
 connectCloudinary();
 
 app.use(express.json());
-app.use(cors({ origin: "*" })); 
+app.use(cors());
 
 app.use("/api/brands", brandRoutes);
 app.use("/api/products", productRoutes);

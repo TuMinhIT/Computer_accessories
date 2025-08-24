@@ -80,47 +80,47 @@ export default function ProfileManager() {
   };
 
   const handleSave = async () => {
-    if (!editing) return;
+  if (!editing) return;
 
-    if (JSON.stringify(profile) === JSON.stringify(originalProfile)) {
-      toast.info("Không có thay đổi nào để cập nhật");
-      setEditing(false);
-      return;
-    }
+  const formData = new FormData();
+  formData.append("fullName", profile.fullName);
+  formData.append("phone", profile.phone || "");
+  formData.append("address", profile.address || "");
+  formData.append("bio", profile.bio || "");
+  formData.append("birthday", profile.birthday || "");
+  formData.append("gender", profile.gender || "");
 
-    const eobj = validate(profile);
-    setErrors(eobj);
-    if (Object.keys(eobj).length > 0) return;
+  if (fileInputRef.current?.files[0]) {
+    formData.append("avatar", fileInputRef.current.files[0]);
+  }
 
-    try {
-      const token = localStorage.getItem("token");
-      const dataToSend = { ...profile };
-      if (!dataToSend.birthday) delete dataToSend.birthday;
-      if (!dataToSend.avatar) delete dataToSend.avatar;
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.put("http://localhost:5000/api/users/profile", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-      const res = await axios.put(
-        "http://localhost:5000/api/users/profile",
-        dataToSend,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+   if (res.data.success) {
+  const data = res.data.data;
 
-      if (res.data.success) {
-        const data = res.data.data;
-        const formatted = {
-          ...data,
-          birthday: data.birthday ? String(data.birthday).slice(0, 10) : "",
-        };
-        setProfile(formatted);
-        setOriginalProfile(formatted);
-        toast.success("Cập nhật thông tin thành công!");
-        setEditing(false);
-      } else {
-        toast.error(res.data.message || "Cập nhật thất bại");
-      }
-    } catch (err) {
-      toast.error("Có lỗi xảy ra khi lưu thông tin");
-    }
+  const formatted = {
+    ...data,
+    birthday: data.birthday ? String(data.birthday).slice(0, 10) : "",
   };
+
+  setProfile(formatted);
+  setEditing(false);
+  toast.success("Cập nhật thông tin thành công!");
+}
+
+  } catch (err) {
+    toast.error("Có lỗi xảy ra khi lưu thông tin");
+  }
+};
+
 
   const handleCancel = () => {
     setProfile(originalProfile); 
