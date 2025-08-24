@@ -19,7 +19,7 @@ connectDB().then(AdminController.createDefaultAdmin);
 connectCloudinary();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "*" })); 
 
 app.use("/api/brands", brandRoutes);
 app.use("/api/products", productRoutes);

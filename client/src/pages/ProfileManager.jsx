@@ -15,12 +15,11 @@ export default function ProfileManager() {
   };
 
   const [profile, setProfile] = useState(defaultProfile);
-  const [originalProfile, setOriginalProfile] = useState(defaultProfile); // bản gốc để so sánh
+  const [originalProfile, setOriginalProfile] = useState(defaultProfile); 
   const [editing, setEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
 
-  // ✅ Load profile khi mount
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -46,7 +45,6 @@ export default function ProfileManager() {
     fetchProfile();
   }, []);
 
-  // ✅ Validate form
   const validate = (data) => {
     const e = {};
     if (!data.fullName || data.fullName.trim().length < 3)
@@ -65,7 +63,6 @@ export default function ProfileManager() {
     const value = e.target.value;
     setProfile((p) => ({ ...p, [field]: value }));
     
-    // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: "" }));
     }
@@ -82,7 +79,6 @@ export default function ProfileManager() {
     reader.readAsDataURL(file);
   };
 
-  // ✅ Chỉ chạy khi click nút "Lưu"
   const handleSave = async () => {
     if (!editing) return;
 
@@ -127,8 +123,8 @@ export default function ProfileManager() {
   };
 
   const handleCancel = () => {
-    setProfile(originalProfile); // khôi phục dữ liệu gốc
-    setErrors({}); // clear errors
+    setProfile(originalProfile); 
+    setErrors({}); 
     setEditing(false);
   };
 
@@ -189,7 +185,6 @@ export default function ProfileManager() {
           </div>
         </div>
 
-        {/* Right column: form - KHÔNG dùng form tag để tránh submit tự động */}
         <div className="h-screen md:w-2/3 p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Quản lý thông tin cá nhân</h2>
@@ -199,7 +194,6 @@ export default function ProfileManager() {
           </div>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Họ và tên */}
             <div>
               <label className="block text-sm font-medium">Họ và tên</label>
               <input
@@ -295,7 +289,6 @@ export default function ProfileManager() {
             </div>
           </div>
 
-          {/* Actions - Tách riêng khỏi form */}
           <div className="mt-6 flex items-center gap-3">
             {editing ? (
               <>
