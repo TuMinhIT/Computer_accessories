@@ -2,11 +2,39 @@ import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 import HeaderDropdown from "./HeaderDropdown";
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(assets.user_img); 
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setAvatarUrl(assets.user_img);
+          return;
+        }
+        const res = await axios.get("http://localhost:5000/api/users/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.data?.success) {
+          const url = res.data.data?.avatar;
+          setAvatarUrl(url && url.length > 0 ? url : assets.user_img);
+        } else {
+          setAvatarUrl(assets.user_img);
+        }
+      } catch (err) {
+        setAvatarUrl(assets.user_img);
+      }
+    };
+
+    fetchAvatar();
+  }, []); 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -67,21 +95,20 @@ const Header = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-3">
-            {/* customer and sale */}
+            {/* sales */}
             <Link
               to="/sales"
               className="p-2 hover:bg-indigo-600 rounded-full transition-colors duration-200 relative"
             >
               <img className="w-6 h-6" src={assets.sell} alt="Sell" />
-              {/* Cart badge */}
             </Link>
+
             {/* Cart */}
             <Link
               to="/cart"
               className="p-2 hover:bg-indigo-600 rounded-full transition-colors duration-200 relative"
             >
               <img className="w-6 h-6" src={assets.shopping_cart} alt="Cart" />
-              {/* Cart badge */}
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 3
               </span>
@@ -95,7 +122,7 @@ const Header = () => {
               >
                 <img
                   className="w-8 h-8 rounded-full object-cover border-2 border-transparent hover:border-white"
-                  src={assets.user_img}
+                  src={avatarUrl}
                   alt="User"
                 />
               </button>
