@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
 import User from "../models/UserModel.js";
-
+import { cloudinary } from "../config/cloudinary.js";
 const addUser = async (req, res) => {
   try {
     const { name, email, phone, salary } = req.body;
@@ -346,6 +346,52 @@ const resetPassword = async (req, res) => {
     return res.json({ success: false, message: "Invalid or expired token" });
   }
 };
+const getProfile = async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.user.username })
+      .select("-password -resetPasswordToken -resetPasswordExpire");
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, data: user });
+  } catch (error) {
+    console.error("getProfile error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    let updates = { ...req.body };
+
+    Object.keys(updates).forEach((key) => {
+      if (updates[key] === "") delete updates[key];
+    });
+
+    if (updates.birthday) {
+      updates.birthday = new Date(updates.birthday);
+    }
+
+    const updated = await User.findOneAndUpdate(
+      { username: req.user.username },
+      updates,
+      { new: true }
+    ).select("-password -resetPasswordToken -resetPasswordExpire");
+
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, message: "Profile updated successfully", data: updated });
+  } catch (err) {
+    console.error("❌ updateProfile error:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
 
 export default {
   addUser,
@@ -359,4 +405,8 @@ export default {
   deleteUser,
   forgotPassword,
   resetPassword,
+  getProfile,
+  updateProfile,
 };
+
+

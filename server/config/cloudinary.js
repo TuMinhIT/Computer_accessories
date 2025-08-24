@@ -13,5 +13,5 @@ const connectCloudinary = async () => {
     process.exit(1);
   }
 };
-
+export { cloudinary };
 export default connectCloudinary;

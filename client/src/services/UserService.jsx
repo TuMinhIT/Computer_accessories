@@ -91,31 +91,27 @@ export const UserService = () => {
   };
 
   const adminProfile = async () => {
-    try {
-      const res = await axios.post(
-        backendUrl + resource + "/adminProfile",
-        {},
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
-      console.log(res.data);
-      if (!res.data.success) {
-        setToken("");
-      }
-      return res.data;
-    } catch (error) {
-      toast.error("Failed: " + (err.message || ""));
-      console.error(err);
-      throw err;
+  try {
+    const res = await axios.get(backendUrl + resource + "profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.data.success) {
+      setToken("");
     }
-  };
+    return res.data;
+  } catch (err) {
+    toast.error("Failed: " + (err.response?.data?.message || err.message));
+    throw err;
+  }
+};
+
 
   const updateInfo = async ({ id, data }) => {
-    const res = await axios.put(backendUrl + resource + "/" + id, data, {
+    const res = await axios.put(backendUrl + resource + id, data, {
       headers: {
+        Authorization: `Bearer ${token}`, 
         "Content-Type": "multipart/form-data",
       },
     });

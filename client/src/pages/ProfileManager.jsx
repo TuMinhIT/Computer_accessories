@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function ProfileManager() {
   const defaultProfile = {
@@ -9,25 +11,42 @@ export default function ProfileManager() {
     bio: "",
     birthday: "",
     gender: "",
-    avatar: null,
+    avatar: "",
   };
 
   const [profile, setProfile] = useState(defaultProfile);
+  const [originalProfile, setOriginalProfile] = useState(defaultProfile); // bản gốc để so sánh
   const [editing, setEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
 
-  // Load saved profile
+  // ✅ Load profile khi mount
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("profile_demo_v1");
-      if (saved) setProfile(JSON.parse(saved));
-    } catch (e) {
-      console.warn("Failed to parse saved profile", e);
-    }
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5000/api/users/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data.success) {
+          const data = res.data.data;
+          const formatted = {
+            ...data,
+            birthday: data.birthday ? String(data.birthday).slice(0, 10) : "",
+          };
+          setProfile(formatted);
+          setOriginalProfile(formatted);
+        } else {
+          toast.error(res.data.message || "Failed to load profile");
+        }
+      } catch (err) {
+        toast.error("Error loading profile");
+      }
+    };
+    fetchProfile();
   }, []);
 
-  // Basic validation
+  // ✅ Validate form
   const validate = (data) => {
     const e = {};
     if (!data.fullName || data.fullName.trim().length < 3)
@@ -42,14 +61,20 @@ export default function ProfileManager() {
   };
 
   const handleChange = (field) => (e) => {
+    if (!editing) return;
     const value = e.target.value;
     setProfile((p) => ({ ...p, [field]: value }));
+    
+    // Clear error for this field when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: "" }));
+    }
   };
 
   const handleAvatar = (e) => {
+    if (!editing) return;
     const file = e.target.files?.[0];
     if (!file) return;
-    // Basic client-side image preview via Data URL
     const reader = new FileReader();
     reader.onload = () => {
       setProfile((p) => ({ ...p, avatar: reader.result }));
@@ -57,42 +82,71 @@ export default function ProfileManager() {
     reader.readAsDataURL(file);
   };
 
-  const handleEditToggle = () => {
-    setErrors({});
-    setEditing((v) => !v);
-  };
+  // ✅ Chỉ chạy khi click nút "Lưu"
+  const handleSave = async () => {
+    if (!editing) return;
 
-  const handleSave = (e) => {
-    e.preventDefault();
+    if (JSON.stringify(profile) === JSON.stringify(originalProfile)) {
+      toast.info("Không có thay đổi nào để cập nhật");
+      setEditing(false);
+      return;
+    }
+
     const eobj = validate(profile);
     setErrors(eobj);
     if (Object.keys(eobj).length > 0) return;
 
-    // Emulate save => persist to localStorage and exit edit mode
-    localStorage.setItem("profile_demo_v1", JSON.stringify(profile));
-    setEditing(false);
-    // Optionally show a toast (not implemented) or small visual feedback
+    try {
+      const token = localStorage.getItem("token");
+      const dataToSend = { ...profile };
+      if (!dataToSend.birthday) delete dataToSend.birthday;
+      if (!dataToSend.avatar) delete dataToSend.avatar;
+
+      const res = await axios.put(
+        "http://localhost:5000/api/users/profile",
+        dataToSend,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.data.success) {
+        const data = res.data.data;
+        const formatted = {
+          ...data,
+          birthday: data.birthday ? String(data.birthday).slice(0, 10) : "",
+        };
+        setProfile(formatted);
+        setOriginalProfile(formatted);
+        toast.success("Cập nhật thông tin thành công!");
+        setEditing(false);
+      } else {
+        toast.error(res.data.message || "Cập nhật thất bại");
+      }
+    } catch (err) {
+      toast.error("Có lỗi xảy ra khi lưu thông tin");
+    }
   };
 
   const handleCancel = () => {
-    // reload saved profile or reset
-    const saved = localStorage.getItem("profile_demo_v1");
-    if (saved) setProfile(JSON.parse(saved));
-    else setProfile(defaultProfile);
-    setErrors({});
+    setProfile(originalProfile); // khôi phục dữ liệu gốc
+    setErrors({}); // clear errors
     setEditing(false);
   };
 
+  const handleEdit = () => {
+    setEditing(true);
+  };
+
   const handleResetAvatar = () => {
-    setProfile((p) => ({ ...p, avatar: null }));
+    if (!editing) return;
+    setProfile((p) => ({ ...p, avatar: "" }));
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
-    <div className="bg-white shadow rounded-2xl hscreen px-10 md:px-30 overflow-hidden">
+    <div className="bg-white shadow rounded-2xl h-screen px-10 md:px-30 overflow-hidden">
       <div className="flex flex-col md:flex-row">
-        {/* Left column: avatar + quick info */}
-        <div className="md:w-1/3 p-6  bg-gradient-to-b  from-white to-slate-50 md:border-r">
+        {/* Left column: avatar */}
+        <div className="md:w-1/3 p-6 bg-gradient-to-b from-white to-slate-50 md:border-r">
           <div className="flex flex-col items-center text-center gap-4">
             <div className="relative">
               <div className="w-36 h-36 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -106,16 +160,17 @@ export default function ProfileManager() {
                   <div className="text-slate-400">No avatar</div>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="absolute -bottom-2 right-0 bg-white border p-2 rounded-full shadow text-sm"
-                aria-label="Thay đổi avatar"
-              >
-                ✏️
-              </button>
+              {editing && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute -bottom-2 right-0 bg-white border p-2 rounded-full shadow text-sm"
+                  aria-label="Thay đổi avatar"
+                >
+                  ✏️
+                </button>
+              )}
             </div>
-
             <div>
               <h3 className="text-lg font-semibold">
                 {profile.fullName || "Tên người dùng"}
@@ -124,47 +179,6 @@ export default function ProfileManager() {
                 {profile.email || "Chưa có email"}
               </p>
             </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={handleEditToggle}
-                className="px-3 py-1 rounded-full border text-sm hover:bg-slate-50"
-              >
-                {editing ? "Đang sửa" : "Chỉnh sửa"}
-              </button>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-3 py-1 rounded-lg border"
-                  disabled={!editing}
-                >
-                  Thay avatar
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleResetAvatar}
-                  className="px-3 py-1 rounded-lg border"
-                  disabled={!editing || !profile.avatar}
-                >
-                  Xóa avatar
-                </button>
-              </div>
-
-              <button
-                onClick={() => {
-                  // quick mock: clear storage
-                  localStorage.removeItem("profile_demo_v1");
-                  setProfile(defaultProfile);
-                }}
-                className="px-3 py-1 rounded-full border text-sm hover:bg-slate-50"
-              >
-                Reset
-              </button>
-            </div>
-
             <input
               ref={fileInputRef}
               type="file"
@@ -175,25 +189,27 @@ export default function ProfileManager() {
           </div>
         </div>
 
-        {/* Right column: form */}
-        <form onSubmit={handleSave} className="h-screen md:w-2/3 p-6">
+        {/* Right column: form - KHÔNG dùng form tag để tránh submit tự động */}
+        <div className="h-screen md:w-2/3 p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Quản lý thông tin cá nhân</h2>
-
             <div className="text-sm text-slate-500">
               {editing ? "Đang chỉnh sửa" : "Chỉ xem"}
             </div>
           </div>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Họ và tên */}
             <div>
               <label className="block text-sm font-medium">Họ và tên</label>
               <input
                 value={profile.fullName}
                 onChange={handleChange("fullName")}
                 readOnly={!editing}
-                className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${
-                  errors.fullName ? "border-red-400" : "border-gray-200"
+                className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 transition ${
+                  editing
+                    ? "focus:ring-indigo-200 border-gray-200"
+                    : "bg-gray-100 text-gray-500 cursor-not-allowed"
                 }`}
               />
               {errors.fullName && (
@@ -201,29 +217,27 @@ export default function ProfileManager() {
               )}
             </div>
 
+            {/* Email */}
             <div>
               <label className="block text-sm font-medium">Email</label>
               <input
                 value={profile.email}
-                onChange={handleChange("email")}
-                readOnly={!editing}
-                className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${
-                  errors.email ? "border-red-400" : "border-gray-200"
-                }`}
+                readOnly
+                className="mt-1 block w-full rounded-lg border px-3 py-2 bg-gray-100 text-gray-500"
               />
-              {errors.email && (
-                <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-              )}
             </div>
 
+            {/* Phone */}
             <div>
               <label className="block text-sm font-medium">Số điện thoại</label>
               <input
                 value={profile.phone}
                 onChange={handleChange("phone")}
                 readOnly={!editing}
-                className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${
-                  errors.phone ? "border-red-400" : "border-gray-200"
+                className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 transition ${
+                  editing
+                    ? "focus:ring-indigo-200 border-gray-200"
+                    : "bg-gray-100 text-gray-500 cursor-not-allowed"
                 }`}
               />
               {errors.phone && (
@@ -231,57 +245,63 @@ export default function ProfileManager() {
               )}
             </div>
 
+            {/* Ngày sinh */}
             <div>
               <label className="block text-sm font-medium">Ngày sinh</label>
               <input
                 type="date"
-                value={profile.birthday}
+                value={profile.birthday || ""}
                 onChange={handleChange("birthday")}
                 readOnly={!editing}
-                className="mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition border-gray-200"
+                className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 transition ${
+                  editing
+                    ? "focus:ring-indigo-200 border-gray-200"
+                    : "bg-gray-100 text-gray-500 cursor-not-allowed"
+                }`}
               />
             </div>
 
+            {/* Địa chỉ */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium">Địa chỉ</label>
               <input
-                value={profile.address}
+                value={profile.address || ""}
                 onChange={handleChange("address")}
                 readOnly={!editing}
-                className="mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition border-gray-200"
+                className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 transition ${
+                  editing
+                    ? "focus:ring-indigo-200 border-gray-200"
+                    : "bg-gray-100 text-gray-500 cursor-not-allowed"
+                }`}
               />
             </div>
 
-            <div className="md:col-span-2">
-              {errors.bio && (
-                <p className="text-xs text-red-500 mt-1">{errors.bio}</p>
-              )}
-            </div>
-
+            {/* Giới tính */}
             <div className="md:col-span-2 flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">Giới tính</label>
-                <select
-                  value={profile.gender}
-                  onChange={handleChange("gender")}
-                  disabled={!editing}
-                  className="ml-2 rounded-lg border px-2 py-1"
-                >
-                  <option value="">Chọn</option>
-                  <option value="male">Nam</option>
-                  <option value="female">Nữ</option>
-                  <option value="other">Khác</option>
-                </select>
-              </div>
+              <label className="text-sm font-medium">Giới tính</label>
+              <select
+                value={profile.gender || ""}
+                onChange={handleChange("gender")}
+                disabled={!editing}
+                className={`ml-2 rounded-lg border px-2 py-1 ${
+                  !editing && "bg-gray-100 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                <option value="">Chọn</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+                <option value="other">Khác</option>
+              </select>
             </div>
           </div>
 
-          {/* Actions */}
+          {/* Actions - Tách riêng khỏi form */}
           <div className="mt-6 flex items-center gap-3">
             {editing ? (
               <>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleSave}
                   className="px-4 py-2 rounded-lg bg-indigo-600 text-white"
                 >
                   Lưu
@@ -297,14 +317,14 @@ export default function ProfileManager() {
             ) : (
               <button
                 type="button"
-                onClick={handleEditToggle}
+                onClick={handleEdit}
                 className="px-4 py-2 rounded-lg border"
               >
                 Chỉnh sửa thông tin
               </button>
             )}
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
