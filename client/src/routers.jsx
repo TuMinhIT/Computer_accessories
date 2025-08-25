@@ -18,7 +18,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PrivateRoute from "./PrivateRoute";
 import Login from "./pages/Login";
-
+import ChatPage from "./pages/ChatPage";
 const Routers = () => {
   return (
     <main className="flex-grow bg-gray-50">
@@ -43,6 +43,8 @@ const Routers = () => {
           <Route path="/view-customer" element={<ViewCustomer />} />
           <Route path="/pos" element={<PosPage />} />
           <Route path="/profile" element={<ProfileManager />} />
+          <Route path="/chat" element={<ChatPage />} />
+
         </Route>
       </Routes>
     </main>

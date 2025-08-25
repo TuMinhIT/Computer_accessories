@@ -114,6 +114,18 @@ const Header = () => {
               </span>
             </Link>
 
+              {/* Chat Realtime */}
+            <Link
+              to="/chat"
+              className="p-2 hover:bg-indigo-600 rounded-full transition-colors duration-200 relative"
+            >
+              <img className="w-6 h-6" src={assets.chat} alt="Chat" />
+              {/* badge new message */}
+              <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                5
+              </span>
+            </Link>
+
             {/* User dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button

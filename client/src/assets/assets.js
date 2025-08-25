@@ -1,5 +1,6 @@
 import logo from "./logo.png";
 import shopping_cart from "./shopping-cart.png";
+import chat from "./chat.png";
 import user_img from "./user-img.jpg";
 import background from "./background.png";
 import background1 from "./background1.jpg";
@@ -19,6 +20,7 @@ export const assets = {
   chevron_right,
   search,
   close,
+  chat,
 };
 
 import m1 from "./mouse_item/m1.webp";
