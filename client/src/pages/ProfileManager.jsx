@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import AddressPicker from "../components/AddressPicker";
 
 export default function ProfileManager() {
   const defaultProfile = {
@@ -15,7 +16,7 @@ export default function ProfileManager() {
   };
 
   const [profile, setProfile] = useState(defaultProfile);
-  const [originalProfile, setOriginalProfile] = useState(defaultProfile); 
+  const [originalProfile, setOriginalProfile] = useState(defaultProfile);
   const [editing, setEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
@@ -62,9 +63,9 @@ export default function ProfileManager() {
     if (!editing) return;
     const value = e.target.value;
     setProfile((p) => ({ ...p, [field]: value }));
-    
+
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -80,57 +81,62 @@ export default function ProfileManager() {
   };
 
   const handleSave = async () => {
-  if (!editing) return;
+    if (!editing) return;
 
-  const formData = new FormData();
-  formData.append("fullName", profile.fullName);
-  formData.append("phone", profile.phone || "");
-  formData.append("address", profile.address || "");
-  formData.append("bio", profile.bio || "");
-  formData.append("birthday", profile.birthday || "");
-  formData.append("gender", profile.gender || "");
+    const eobj = validate(profile);
+    setErrors(eobj);
+    if (Object.keys(eobj).length > 0) return;
 
-  if (fileInputRef.current?.files[0]) {
-    formData.append("avatar", fileInputRef.current.files[0]);
-  }
+    const formData = new FormData();
+    formData.append("fullName", profile.fullName);
+    formData.append("phone", profile.phone || "");
+    formData.append("address", profile.address || "");
+    formData.append("bio", profile.bio || "");
+    formData.append("birthday", profile.birthday || "");
+    formData.append("gender", profile.gender || "");
 
-  try {
-    const token = localStorage.getItem("token");
-    const res = await axios.put("http://localhost:5000/api/users/profile", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    if (fileInputRef.current?.files[0]) {
+      formData.append("avatar", fileInputRef.current.files[0]);
+    }
 
-   if (res.data.success) {
-  const data = res.data.data;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        "http://localhost:5000/api/users/profile",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-  const formatted = {
-    ...data,
-    birthday: data.birthday ? String(data.birthday).slice(0, 10) : "",
+      if (res.data.success) {
+        const data = res.data.data;
+        const formatted = {
+          ...data,
+          birthday: data.birthday ? String(data.birthday).slice(0, 10) : "",
+        };
+        setProfile(formatted);
+        setOriginalProfile(formatted);
+        toast.success("Cập nhật thông tin thành công!");
+        setEditing(false);
+      } else {
+        toast.error(res.data.message || "Cập nhật thất bại");
+      }
+    } catch (err) {
+      toast.error("Có lỗi xảy ra khi lưu thông tin");
+    }
   };
 
-  setProfile(formatted);
-  setEditing(false);
-  toast.success("Cập nhật thông tin thành công!");
-}
-
-  } catch (err) {
-    toast.error("Có lỗi xảy ra khi lưu thông tin");
-  }
-};
-
-
   const handleCancel = () => {
-    setProfile(originalProfile); 
-    setErrors({}); 
+    setProfile(originalProfile);
+    setErrors({});
     setEditing(false);
   };
 
-  const handleEdit = () => {
-    setEditing(true);
-  };
+  const handleEdit = () => setEditing(true);
 
   const handleResetAvatar = () => {
     if (!editing) return;
@@ -185,6 +191,7 @@ export default function ProfileManager() {
           </div>
         </div>
 
+        {/* Right column: form */}
         <div className="h-screen md:w-2/3 p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Quản lý thông tin cá nhân</h2>
@@ -211,7 +218,6 @@ export default function ProfileManager() {
               )}
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium">Email</label>
               <input
@@ -221,7 +227,6 @@ export default function ProfileManager() {
               />
             </div>
 
-            {/* Phone */}
             <div>
               <label className="block text-sm font-medium">Số điện thoại</label>
               <input
@@ -239,7 +244,6 @@ export default function ProfileManager() {
               )}
             </div>
 
-            {/* Ngày sinh */}
             <div>
               <label className="block text-sm font-medium">Ngày sinh</label>
               <input
@@ -256,19 +260,12 @@ export default function ProfileManager() {
             </div>
 
             {/* Địa chỉ */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium">Địa chỉ</label>
-              <input
-                value={profile.address || ""}
-                onChange={handleChange("address")}
-                readOnly={!editing}
-                className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 transition ${
-                  editing
-                    ? "focus:ring-indigo-200 border-gray-200"
-                    : "bg-gray-100 text-gray-500 cursor-not-allowed"
-                }`}
-              />
-            </div>
+            <AddressPicker
+              editing={editing}
+              profile={profile}
+              setProfile={setProfile}
+              originalProfile={originalProfile}
+            />
 
             {/* Giới tính */}
             <div className="md:col-span-2 flex items-center gap-4">
@@ -289,6 +286,7 @@ export default function ProfileManager() {
             </div>
           </div>
 
+          {/* Actions */}
           <div className="mt-6 flex items-center gap-3">
             {editing ? (
               <>
