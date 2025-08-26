@@ -9,7 +9,10 @@ const ProductCarousel = ({ item }) => {
         className="relative w-full"
         data-carousel="static"
       >
-        {/* <!-- Carousel wrapper --> */}
+        <p className="absolute right-1 text-sm text-gray-500 z-20">
+          {item.barcode}
+        </p>
+
         <div className="relative h-46 mx-5 rounded-lg overflow-hidden  md:h-50  ">
           <div className=" ease-in-out " data-carousel-item>
             <img
