@@ -4,7 +4,7 @@ import { ShopContext } from "../context/ShopContext";
 const HeaderDropdown = () => {
   const { setToken } = useContext(ShopContext);
   return (
-    <div className="absolute right-0 top-full mt-2 z-50">
+    <div className="absolute right-0 top-full mt-2 z-50 ">
       <div className="bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-48 border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
         {/* Arrow pointer */}
         <div className="absolute -top-1 right-4 w-2 h-2 bg-white border-l border-t border-gray-200 transform rotate-45 dark:bg-gray-700 dark:border-gray-600"></div>

@@ -7,7 +7,7 @@ import axios from "axios";
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(assets.user_img); 
+  const [avatarUrl, setAvatarUrl] = useState(assets.user_img);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const Header = () => {
     };
 
     fetchAvatar();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -114,7 +114,7 @@ const Header = () => {
               </span>
             </Link>
 
-              {/* Chat Realtime */}
+            {/* Chat Realtime */}
             <Link
               to="/chat"
               className="p-2 hover:bg-indigo-600 rounded-full transition-colors duration-200 relative"
