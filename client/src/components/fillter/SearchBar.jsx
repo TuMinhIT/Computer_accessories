@@ -19,7 +19,7 @@ const SearchBar = ({ products, setFilteredProducts }) => {
 
   return (
     <>
-      <div className=" flex items-center hover:border-blue-700 justify-center border border-gray-700  rounded-full w-2/3 sm:w-1/3">
+      <div className=" flex items-center w-full hover:border-blue-700 justify-center border border-gray-700  rounded-full  sm:w-1/3">
         <input
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 text-base  outline-none  px-5 py-2"

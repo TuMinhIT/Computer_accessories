@@ -135,7 +135,9 @@ export default function AddressPicker({
 
           {/* Tỉnh/Quận/Huyện */}
           <div>
-            <label className="block text-sm font-medium">Tỉnh / Quận / Huyện</label>
+            <label className="block text-sm font-medium">
+              Tỉnh / Quận / Huyện
+            </label>
             <select
               value={selectedDistrict}
               onChange={(e) => {
@@ -214,7 +216,9 @@ export default function AddressPicker({
           Địa chỉ đầy đủ
         </label>
         <div className="mt-1 p-3 rounded-lg border bg-gray-50 text-sm">
-          {editing ? previewAddress || "Chưa nhập" : profile.address || "Chưa có"}
+          {editing
+            ? previewAddress || "Chưa nhập"
+            : profile.address || "Chưa có"}
         </div>
       </div>
     </>

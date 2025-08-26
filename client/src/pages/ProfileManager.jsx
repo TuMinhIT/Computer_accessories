@@ -145,7 +145,7 @@ export default function ProfileManager() {
   };
 
   return (
-    <div className="bg-white shadow rounded-2xl h-screen px-10 md:px-30 overflow-hidden">
+    <div className="bg-white shadow  py-5 min-h-screen px-10 md:px-30 overflow-hidden">
       <div className="flex flex-col md:flex-row">
         {/* Left column: avatar */}
         <div className="md:w-1/3 p-6 bg-gradient-to-b from-white to-slate-50 md:border-r">
@@ -309,7 +309,7 @@ export default function ProfileManager() {
               <button
                 type="button"
                 onClick={handleEdit}
-                className="px-4 py-2 rounded-lg border"
+                className="px-4 py-2 rounded-lg border bg-gray-400"
               >
                 Chỉnh sửa thông tin
               </button>

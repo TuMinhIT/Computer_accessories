@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { CategoryService } from "../../services/CategoryService";
-import { useState } from "react";
-const CategoryFillter = () => {
+import { useEffect, useState } from "react";
+const CategoryFillter = ({ handleSelectCategory }) => {
   const { getAllCategories } = CategoryService();
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -10,20 +10,17 @@ const CategoryFillter = () => {
     staleTime: 1000 * 60 * 5,
   });
 
-  const [sortBy, setSortBy] = useState("all");
-
-  const handleSort = (e) => {
-    toast.warning(e.target.value);
-    setSortBy(e.target.value);
-  };
-
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  useEffect(() => {
+    handleSelectCategory(selectedCategory);
+  }, [selectedCategory]);
   return (
     <div className="flex flex-wrap items-center gap-4">
       {categories && (
         <div className="relative w-48">
           <select
-            value={sortBy}
-            onChange={(e) => handleSort(e)}
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
             className="w-full px-4 py-2 rounded-lg bg-white shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-gray-400"
           >
             <option key={"all"} value={"all"}>

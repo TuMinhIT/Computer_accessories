@@ -1,41 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
-const SortDropDown = () => {
+const SortDropDown = ({ handleSort }) => {
   const [sortBy, setSortBy] = useState("default");
-  const handleSort = (e) => {
-    setSortBy(e.target.value);
-    toast.success(sortBy);
-
-    // setSortBy(sortType);
-    // let sorted = [...filteredProducts];
-
-    // switch (sortType) {
-    //   case "price-low":
-    //     sorted.sort((a, b) => a.price - b.price);
-    //     break;
-    //   case "price-high":
-    //     sorted.sort((a, b) => b.price - a.price);
-    //     break;
-    //   case "name":
-    //     sorted.sort((a, b) => a.name.localeCompare(b.name));
-    //     break;
-    //   case "newest":
-    //     sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    //     break;
-    //   default:
-    //     break;
-    // }
-
-    // setFilteredProducts(sorted);
-  };
+  useEffect(() => {
+    handleSort(sortBy);
+  }, [sortBy]);
   return (
     <div>
       <div className="flex flex-wrap items-center gap-4">
         <div className="relative w-48">
           <select
             value={sortBy}
-            onChange={(e) => handleSort(e)}
+            onChange={(e) => setSortBy(e.target.value)}
             className="w-full px-4 py-2 rounded-lg bg-white shadow-sm appearance-none focus:outline-none focus:ring-2 focus:to-blue-600"
           >
             <option value="default">Sort default</option>

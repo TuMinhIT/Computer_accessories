@@ -28,11 +28,11 @@ const Products = () => {
   return (
     <>
       <FilterBar
-        categories={categories}
         products={products}
+        filteredProducts={filteredProducts}
         setFilteredProducts={setFilteredProducts}
       />
-      <div className="px-5 md:px-15">
+      <div className="px-5 md:px-15 min-h-200">
         {isLoading && <Spinner />}
 
         {filteredProducts && categories && (
