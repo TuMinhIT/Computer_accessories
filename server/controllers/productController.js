@@ -45,7 +45,6 @@ export const createProduct = async (req, res) => {
         message: "Barcode already exist!",
       });
     }
-    // Upload tất cả ảnh lên Cloudinary song song
     const uploadResults = await Promise.all(
       req.files.map((file) =>
         cloudinary.uploader.upload(file.path, {
@@ -55,7 +54,6 @@ export const createProduct = async (req, res) => {
       )
     );
 
-    // Lấy danh sách secure_url
     const images = uploadResults.map((result) => result.secure_url);
 
     const newProduct = new Product({
@@ -111,7 +109,6 @@ export const updateProduct = async (req, res) => {
       });
     }
 
-    // Nếu muốn giữ lại images
     const images = existProduct.images;
 
     const updated = await Product.findByIdAndUpdate(
@@ -160,7 +157,6 @@ export const deleteProduct = async (req, res) => {
 
     await Promise.all(
       product.images.map(async (image) => {
-        // Tìm publicId từ URL Cloudinary
         const publicIdMatch = image.match(
           /\/e-commerce\/products\/([^\.\/]+)\./
         );

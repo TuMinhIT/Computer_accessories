@@ -1,18 +1,26 @@
+// import express from "express";
+// import { getMyConversation, getMessages } from "../controllers/chatController.js";
+// import { protect } from "../middleware/authMiddleware.js";
+
+// const router = express.Router();
+
+// router.get("/me", protect, getMyConversation);
+// router.get("/messages/:conversationId", protect, getMessages);
+
+
+// export default router;
 import express from "express";
-import adminAuth from "../middleware/authAdmin.js";
-import {
-  getMyConversationWithAdmin,
-  getMessages,
-  markRead,
-  adminUnreadByEmployee,
-} from "../controllers/chatController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { getMyConversation, getMessages, getAllConversations, markConversationSeen } from "../controllers/chatController.js";
 
 const router = express.Router();
 
-router.get("/me", adminAuth, getMyConversationWithAdmin);
-router.get("/messages/:conversationId", adminAuth, getMessages);
-router.post("/mark-read/:conversationId", adminAuth, markRead);
+// employee
+router.get("/me", protect, getMyConversation);  
+router.get("/messages/:conversationId", protect, getMessages);
 
-router.get("/admin/unread", adminAuth, adminUnreadByEmployee);
+// admin
+router.get("/conversations", protect, getAllConversations); 
+router.post("/seen", protect, markConversationSeen);
 
 export default router;

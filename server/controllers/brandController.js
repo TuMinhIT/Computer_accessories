@@ -62,7 +62,6 @@ export const updateBrand = async (req, res) => {
       return res.send({ success: false, message: "Brand not found" });
     }
 
-    // Nếu đổi tên, kiểm tra trùng tên với brand khác
     if (name && name !== brand.name) {
       const existingBrand = await Brands.findOne({ name });
       if (existingBrand && existingBrand._id.toString() !== req.params.id) {
@@ -74,9 +73,7 @@ export const updateBrand = async (req, res) => {
     }
 
     let image = brand.image;
-    // Nếu có file ảnh mới thì upload và xóa ảnh cũ
     if (req.file && req.file.path) {
-      // Lấy public_id từ url cũ
       const publicIdMatch = brand.image.match(/\/e-commerce\/([^\.\/]+)\./);
       if (publicIdMatch && publicIdMatch[1]) {
         const publicId = `e-commerce/${publicIdMatch[1]}`;

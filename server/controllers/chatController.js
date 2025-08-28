@@ -2,81 +2,164 @@ import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
 import User from "../models/UserModel.js";
 
-const getAdminUser = async () => {
-  const admin = await User.findOne({ role: "admin" }).select("_id fullName avatar email");
-  if (!admin) throw new Error("No admin user found.");
-  return admin;
-};
-
-const getOrCreateConv = async (employeeId, adminId) => {
-  let conv = await Conversation.findOne({
-    participants: { $all: [employeeId, adminId] },
-  });
-  if (!conv) {
-    conv = await Conversation.create({ participants: [employeeId, adminId] });
-  }
-  return conv;
-};
-
-export const getMyConversationWithAdmin = async (req, res) => {
+export const getMyConversation = async (req, res) => {
   try {
-    const me = req.user._id;
-    const admin = await getAdminUser();
-    const conv = await getOrCreateConv(me, admin._id);
-    res.json({ success: true, data: { conversationId: conv._id, admin } });
-  } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
+    const me = req.user;
+    if (!me || !me._id) {
+      return res.status(401).json({ success: false, message: "Unauthorized: no user id" });
+    }
+
+    const admin = await User.findOne({ role: "admin" }).select("_id fullName avatar email");
+    if (!admin || !admin._id) {
+      return res.status(404).json({ success: false, message: "Admin not found" });
+    }
+
+    let conv = await Conversation.findOne({
+      participants: { $all: [me._id, admin._id] },
+    });
+
+    if (!conv) {
+      conv = await Conversation.create({
+        participants: [me._id, admin._id],
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: { conversationId: conv._id, admin },
+    });
+  } catch (err) {
+    console.error("getMyConversation error:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
+
+
 
 export const getMessages = async (req, res) => {
   try {
     const { conversationId } = req.params;
-    const msgs = await Message.find({ conversation: conversationId })
+    const messages = await Message.find({ conversation: conversationId })
       .sort({ createdAt: 1 })
-      .populate("sender", "fullName avatar")
-      .populate("receiver", "fullName avatar");
-    res.json({ success: true, data: msgs });
-  } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
+      .populate("sender", "_id fullName avatar")
+      .populate("receiver", "_id fullName avatar");
+
+    return res.json({ success: true, data: messages });
+  } catch (err) {
+    console.error("getMessages error:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-export const markRead = async (req, res) => {
+export const markConversationSeen = (io) => async (req, res) => {
   try {
-    const { conversationId } = req.params;
-    const result = await Message.updateMany(
-      { conversation: conversationId, receiver: req.user._id, readAt: null },
+    const adminId = req.user._id;
+    const { conversationId } = req.body;
+
+    await Message.updateMany(
+      { conversation: conversationId, receiver: adminId, readAt: null },
       { $set: { readAt: new Date() } }
     );
-    res.json({ success: true, data: { modified: result.modifiedCount } });
-  } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
+
+    io.to(`conv:${conversationId}`).emit("message:read", { conversationId });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("markConversationSeen error:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-export const adminUnreadByEmployee = async (req, res) => {
+// export const getAllConversations = async (req, res) => {
+//   try {
+//     if (!req.user || req.user.role !== "admin") {
+//       return res.status(403).json({ success: false, message: "Forbidden" });
+//     }
+
+//     const convs = await Conversation.find({})
+//       .sort({ lastMessageAt: -1 })
+//       .populate("participants", "_id fullName email avatar role");
+
+//     const data = convs.map((c) => {
+//       const employee = (c.participants || []).find((p) => p.role !== "admin");
+
+//       return {
+//         conversationId: c._id,
+//         employee: employee || null,
+//         lastMessage: c.lastMessage || "",
+//         lastMessageAt: c.lastMessageAt || null,
+//       };
+//     });
+
+//     res.json({ success: true, data });
+//   } catch (err) {
+//     console.error("❌ getAllConversations error:", err);
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// };
+export const getAllConversations = async (req, res) => {
   try {
-    const admin = req.user._id;
-    const agg = await Message.aggregate([
-      { $match: { receiver: admin, readAt: null } },
-      {
-        $group: {
-          _id: "$sender",
-          unread: { $sum: 1 },
-          lastAt: { $max: "$createdAt" },
-        },
-      },
-      { $sort: { lastAt: -1 } },
-    ]);
-    const withUser = await Promise.all(
-      agg.map(async (a) => {
-        const u = await User.findById(a._id).select("_id fullName avatar email");
-        return { user: u, unread: a.unread, lastAt: a.lastAt };
+    if (!req.user || req.user.role !== "admin") {
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    }
+
+    console.log("🔍 Admin getting all conversations:", req.user._id);
+
+    // ✅ Thêm filter để tránh participants invalid
+    const convs = await Conversation.find({
+      participants: { 
+        $exists: true, 
+        $not: { $size: 0 },
+        $type: "array"
+      }
+    })
+    .sort({ lastMessageAt: -1 })
+    .populate({
+      path: "participants", 
+      select: "_id fullName email avatar role",
+      // ✅ Chỉ populate những document tồn tại
+      options: { strictPopulate: false }
+    })
+    .lean(); // ✅ Thêm lean() để performance tốt hơn
+
+    console.log(`✅ Found ${convs.length} conversations`);
+
+    // ✅ Filter và map cẩn thận hơn
+    const data = convs
+      .filter(c => {
+        // Loại bỏ conversation không có participants hợp lệ
+        if (!c.participants || !Array.isArray(c.participants) || c.participants.length === 0) {
+          console.log("⚠️ Invalid conversation found:", c._id);
+          return false;
+        }
+        return true;
       })
-    );
-    res.json({ success: true, data: withUser });
-  } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
+      .map((c) => {
+        // Tìm employee (không phải admin)
+        const employee = c.participants.find((p) => {
+          return p && p.role && p.role !== "admin";
+        });
+
+        return {
+          conversationId: c._id,
+          employee: employee ? {
+            _id: employee._id,
+            fullName: employee.fullName,
+            email: employee.email,
+            avatar: employee.avatar
+          } : null,
+          lastMessage: c.lastMessage || "",
+          lastMessageAt: c.lastMessageAt || c.createdAt,
+        };
+      })
+      .filter(item => item.employee !== null); // Chỉ trả về conversations có employee
+
+    console.log(`✅ Returning ${data.length} valid conversations`);
+    res.json({ success: true, data });
+
+  } catch (err) {
+    console.error("❌ getAllConversations error:", err);
+    console.error("Stack trace:", err.stack);
+    res.status(500).json({ success: false, message: err.message });
   }
 };

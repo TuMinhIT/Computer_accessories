@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
 import User from "../models/UserModel.js";
 import { cloudinary } from "../config/cloudinary.js";
@@ -192,27 +191,39 @@ const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { username: user.username, role: user.role },
+      { id: user._id, username: user.username, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "3h" }
     );
+
+    const userData = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      fullName: user.fullName,
+    };
 
     if (user.mustChangePassword) {
       return res.json({
         success: true,
         token,
         forceChangePassword: true,
+        user: userData,
       });
     }
 
     res.json({
       success: true,
       token,
+      user: userData,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 
 const changeUserPassword = async (req, res) => {

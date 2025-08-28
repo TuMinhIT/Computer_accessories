@@ -1,4 +1,4 @@
-const ChatInput = ({ send, lastMyMsg, text }) => {
+const ChatInput = ({ send, lastMyMsg, text, setText }) => {
   return (
     <>
       <div className="px-3 pb-2">
@@ -11,6 +11,7 @@ const ChatInput = ({ send, lastMyMsg, text }) => {
           <input
             className="flex-1  px-3 py-2 outline-none "
             placeholder="Nhập tin nhắn..."
+             value={text}  // ✅ giữ state input
             // value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}

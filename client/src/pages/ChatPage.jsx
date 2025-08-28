@@ -121,8 +121,9 @@ export default function ChatPage({ setShowChat }) {
         connected={connected}
       />
       <ChatInit />
-      <ChatBody messages={messages} bottomRef={bottomRef} />
-      <ChatInput send={send} lastMyMsg={lastMyMsg} text={text} />
+      <ChatBody messages={messages} bottomRef={bottomRef} myId={myId} />
+
+      <ChatInput send={send} lastMyMsg={lastMyMsg} text={text}  setText={setText}/>
     </div>
   );
 }
