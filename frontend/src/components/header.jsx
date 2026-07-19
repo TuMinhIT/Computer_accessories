@@ -1,14 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import HeaderDropdown from "./HeaderDropdown";
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { useContext, useEffect, useRef, useState } from "react";
+import { ShopContext } from "../context/ShopContext";
+import { toast } from "react-toastify";
+
 
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(assets.user_img);
+  const { token } = useContext(ShopContext);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // const fetchAvatar = async () => {
@@ -81,6 +84,7 @@ const Header = () => {
             </Link>
             <Link
               to="/about"
+              onClick={() => toast.success("ok")}
               className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-600 transition-colors duration-200"
             >
               About
@@ -122,22 +126,29 @@ const Header = () => {
               </span>
             </Link>
 
-            {/* User dropdown */}
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="p-1 hover:bg-indigo-600 rounded-full transition-colors duration-200"
-              >
-                <img
-                  className="w-8 h-8 rounded-full object-cover border-2 border-transparent hover:border-white"
-                  src={avatarUrl}
-                  alt="User"
-                />
-              </button>
-              {showDropdown && <HeaderDropdown />}
-            </div>
+            {!token ?
 
-            {/* Mobile menu button */}
+              <Link
+                to="/login"
+                className="p-2 hover:bg-indigo-600 rounded-full transition-colors duration-200"
+              >
+                Login
+              </Link> : < div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className="p-1 hover:bg-indigo-600 rounded-full transition-colors duration-200"
+                >
+                  <img
+                    className="w-8 h-8 rounded-full object-cover border-2 border-transparent hover:border-white"
+                    src={assets.user}
+                    alt="User"
+                  />
+                </button>
+                {showDropdown && <HeaderDropdown />}
+              </div>
+
+            }
+
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
               className="md:hidden p-2 hover:bg-indigo-600 rounded-lg transition-colors duration-200"
@@ -165,6 +176,7 @@ const Header = () => {
                 )}
               </svg>
             </button>
+
           </div>
         </div>
 
@@ -204,7 +216,7 @@ const Header = () => {
           </div>
         )}
       </div>
-    </header>
+    </header >
   );
 };
 

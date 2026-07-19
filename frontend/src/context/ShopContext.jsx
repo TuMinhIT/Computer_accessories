@@ -12,10 +12,10 @@ const ShopContextProvider = ({ children }) => {
 
 
   useEffect(() => {
-    if (token === "" || refreshToken === "") {
+    if (accessToken === "" || refreshToken === "") {
       logout()
     }
-  }, [token, accessToken, refreshToken]);
+  }, [accessToken, refreshToken]);
 
 
 
@@ -28,7 +28,6 @@ const ShopContextProvider = ({ children }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("role");
-    navigate("/login");
   };
 
   const setLoginToken = async (accessToken, refreshToken) => {

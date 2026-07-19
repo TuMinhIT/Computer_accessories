@@ -1,7 +1,7 @@
 import logo from "./logo.png";
 import shopping_cart from "./shopping-cart.png";
 import chat from "./chat.png";
-import user_img from "./user-img.jpg";
+import user from "./user.jpg";
 import background from "./background.png";
 import background1 from "./background1.jpg";
 import sell from "./sell.png";
@@ -12,7 +12,7 @@ import close from "./close.png";
 export const assets = {
   logo,
   shopping_cart,
-  user_img,
+  user,
   background1,
   background,
   sell,

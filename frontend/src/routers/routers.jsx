@@ -32,22 +32,22 @@ const Routers = () => {
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/products" element={<Products />} />
 
         {/* Private wrapper */}
         <Route element={<PrivateRoute />}>
           <Route path="/tran" element={<Transaction />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
           <Route path="/sales" element={<ReportPage />} />
-          <Route path="/products" element={<Products />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/view-customer" element={<ViewCustomer />} />
           <Route path="/pos" element={<PosPage />} />
           <Route path="/profile" element={<ProfileManager />} />
           <Route path="/chat" element={<ChatPage />} />
-
         </Route>
       </Routes>
     </main>
