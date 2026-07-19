@@ -6,20 +6,21 @@ import { UserService } from "../../services/UserService";
 import Spinner from "../Spinner";
 import { useContext } from "react";
 import { ShopContext } from "../../context/ShopContext";
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const { login } = UserService();
-  const { setRole, setLoginToken, token } = useContext(ShopContext)
+  const { setLoginToken, token } = useContext(ShopContext)
   const navigate = useNavigate()
 
   const useLogin = useMutation({
     mutationFn: login,
     onSuccess: (res) => {
-      setLoginToken(res.data.accessToken, res.data.refreshToken);
-      setRole(res.data.user.role);
+      setLoginToken(res.data.accessToken, res.data.refreshToken, res.data.user);
+      console.log(res.data.user)
       toast.success("Login successfully!");
       navigate("/home")
     },

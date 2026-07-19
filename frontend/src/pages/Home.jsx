@@ -9,7 +9,7 @@ function Home() {
       <div className=" mx-5 md:mx-20 sm:mx-15 p-3 flex-col">
         <Banner />
         <CategoriesSection />
-        <Bestseller />
+        {/* <Bestseller /> */}
       </div>
     </>
   );

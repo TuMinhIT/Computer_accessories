@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CategoryService } from "../services/CategoryService";
+import { CategoryService } from "../admin/components/CategoryService";
 import Spinner from "./Spinner";
 import { useQuery } from "@tanstack/react-query";
 import Title from "./Title";

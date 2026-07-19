@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import ProductCard from "../components/products/productCard";
 import SubTitle from "../components/SubTitle";
 import Spinner from "../components/Spinner";
-import { CategoryService } from "../services/CategoryService";
+import { CategoryService } from "../admin/components/CategoryService";
 import FilterBar from "../components/fillter/FilterBar";
 import { useEffect, useState } from "react";
 const Products = () => {

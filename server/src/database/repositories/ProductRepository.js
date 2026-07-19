@@ -1,14 +1,18 @@
 import { GenericRepository } from "./GenericRepository.js";
-import UserModel from "../models/UserModel.js";
+import ProductModel from "../models/ProductModel.js";
 
-export class UserRepository extends GenericRepository {
+export class ProductRepository extends GenericRepository {
     constructor() {
-        super(UserModel);
+        super(ProductModel);
     }
 
-    async findByEmail(email) {
-        return await this.model.findOne({
-            email: email
-        });
+    async updateStock(productId, quantity) {
+        return await this.model.findByIdAndUpdate(
+            productId,
+            { $inc: { stock: -quantity } },
+            { new: true }
+        );
     }
+
+
 }

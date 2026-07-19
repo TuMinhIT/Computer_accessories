@@ -12,18 +12,7 @@ import ChatAdminPage from "./pages/ChatAdminPage";
 const Routers = () => {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<OverView />} />
-        <Route path="/employees" element={<Employees />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/inbox" element={<ChatAdminPage />} />
-        <Route path="/categories" element={<CategoriesAndBrand />} />
-        <Route path="/profile" element={<ProfileManager />} />
-        <Route path="/customers" element={<Customers />} />
-        <Route path="/admin/chat" element={<ChatAdminPage />} />
 
-      </Routes>
     </>
   );
 };

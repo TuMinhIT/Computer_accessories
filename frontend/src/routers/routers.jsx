@@ -7,25 +7,33 @@ import Products from "../pages/Products";
 import Cart from "../pages/Cart";
 import PosPage from "../pages/PosPage";
 import ViewCustomer from "../pages/ViewCustomer";
-// import CheckoutCustomerForm from "./components/CheckoutCustomerForm";
+
 import CheckoutPage from "../pages/CheckoutPage";
 import ReportPage from "../pages/ReportPage";
 import Transaction from "../pages/transaction";
 import ProfileManager from "../pages/ProfileManager";
 import ChangePassword from "../pages/ChangePassword";
-// import CustomerHistory from "./components/CustomerHistory";
+
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import PrivateRoute from "./PrivateRoute";
 import Login from "../pages/Login";
 import ChatPage from "../pages/ChatPage";
 import RegisterForm from "../components/auth/RegisterForm";
+
+
+//admin
+import AdminLayout from "../layout/AdminLayout";
+import UserLayout from "../layout/UserLayout";
+import AdminRoute from "./AdminRoute";
+import OverView from "../admin/pages/OverView";
+
 const Routers = () => {
   return (
-    <main className="flex-grow bg-gray-50">
-      <Routes>
+    <Routes>
+      {/* Các route của User (Khách) */}
+      <Route element={<UserLayout />}>
         {/* Public */}
-        <Route path="/*" element={<Home />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
@@ -34,11 +42,12 @@ const Routers = () => {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/products" element={<Products />} />
 
-        {/* Private wrapper */}
+        {/* Private wrapper cho User */}
         <Route element={<PrivateRoute />}>
           <Route path="/tran" element={<Transaction />} />
           <Route path="/sales" element={<ReportPage />} />
@@ -49,8 +58,22 @@ const Routers = () => {
           <Route path="/profile" element={<ProfileManager />} />
           <Route path="/chat" element={<ChatPage />} />
         </Route>
-      </Routes>
-    </main>
+      </Route>
+
+      {/* Các route của Admin */}
+      <Route element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<OverView />} />
+          {/* <Route path="employees" element={<Employees />} />
+          <Route path="products" element={<Products />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="categories" element={<CategoriesAndBrand />} />
+          <Route path="profile" element={<ProfileManager />} />
+          <Route path="chat" element={<ChatAdminPage />} /> */}
+        </Route>
+      </Route>
+    </Routes>
   );
 };
 

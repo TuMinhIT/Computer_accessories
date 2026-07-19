@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { CategoryService } from "../../services/CategoryService";
+import { CategoryService } from "../../admin/components/CategoryService";
 import { useEffect, useState } from "react";
 const CategoryFillter = ({ handleSelectCategory }) => {
   const { getAllCategories } = CategoryService();

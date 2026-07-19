@@ -1,106 +1,97 @@
-import Categories from "../models/CategoryModel.js";
+import { CategoryService } from "../services/category.service.js";
+import ApiResponse from "../utils/apiResponse.js";
+const service = new CategoryService();
 
 export const getCategories = async (req, res) => {
-  const categories = await Categories.find();
-  res.send({
-    success: true,
-    data: categories.reverse(),
-  });
+  const categories = await service.getAll()
+  return res.json(
+    new ApiResponse(
+      {
+        success: true,
+        data: categories,
+      })
+  );
 };
 
 export const getCategory = async (req, res) => {
   const { id } = req.params;
-  const category = await Categories.findById(id);
+  const category = await service.get(id);
   if (category) {
-    res.send({
-      success: true,
-      data: category,
-    });
+    return res.json(
+      new ApiResponse(
+        {
+          success: true,
+          data: category,
+        })
+    );
   } else
-    res.send({
-      success: false,
-      message: "Category not found!",
-    });
+    return res.json(
+      new ApiResponse(
+        {
+          success: false,
+          message: "Category not found!",
+        })
+    );
 };
 
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
-    const existingCategory = await Categories.findOne({ name });
-    if (existingCategory) {
-      return res.send({
-        success: false,
-        message: "Category already exists",
-      });
-    }
-
-    const category = new Categories({ name, description });
-    await category.save();
-
-    res.send({
-      success: true,
-      message: "Category created successfully",
-      category: category,
-    });
+    const category = await service.createCategory({ name, description });
+    return res.send(
+      new ApiResponse(
+        {
+          success: true,
+          message: "Category created successfully",
+          category: category,
+        })
+    );
   } catch (err) {
-    res.send({
-      success: false,
-      message: err.message,
-    });
-    console.log(err.message);
+    return res.send(
+      new ApiResponse(
+        {
+          success: false,
+          message: err.message,
+        })
+    );
   }
 };
 
 export const updateCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, description } = req.body;
 
-    const updated = await Categories.findByIdAndUpdate(id, {
-      name,
-      description,
-    });
+  const { id } = req.params;
+  const { name, description } = req.body;
+  const updated = await service.updateCategory(id, { name, description });
+  return res.send(
+    new ApiResponse(
+      {
+        success: true,
+        message: "Category updated successfully",
+        category: updated,
+      })
+  );
 
-    if (!updated) {
-      return res.send({
-        success: false,
-        message: "Category not found",
-      });
-    }
-    res.send({
-      success: true,
-      message: "Category updated successfully",
-      category: updated,
-    });
-  } catch (err) {
-    res.send({
-      success: false,
-      message: err.message,
-    });
-    console.log(err.message);
-  }
 };
 
 export const deleteCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const category = await Categories.findByIdAndDelete(id);
 
-    if (!category) {
-      return res.send({
-        success: false,
-        message: "Category not found",
-      });
-    }
-    res.send({
-      success: true,
-      message: "Category deleted successfully",
-    });
-  } catch (err) {
-    res.send({
-      success: false,
-      message: err.message,
-    });
-    console.log(err.message);
+  const { id } = req.params;
+  const category = await service.deleteCategory(id);
+
+  if (!category) {
+    return res.json(
+      new ApiResponse(
+        {
+          success: false,
+          message: "Category not found",
+        })
+    );
   }
+  res.json(
+    new ApiResponse(
+      {
+        success: true,
+        message: "Category deleted successfully",
+      })
+  );
 };

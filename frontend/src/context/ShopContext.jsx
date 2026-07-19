@@ -8,6 +8,7 @@ const ShopContextProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || "");
   const [refreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || "");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
+  const [user, setUser] = useState(localStorage.getItem("user") || null);
   const navigate = useNavigate();
 
 
@@ -24,16 +25,25 @@ const ShopContextProvider = ({ children }) => {
     setRole("");
     setAccessToken("");
     setRefreshToken("");
+    setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("role");
+    localStorage.removeItem("user");
   };
 
-  const setLoginToken = async (accessToken, refreshToken) => {
+  const setLoginToken = async (accessToken, refreshToken, user) => {
     setAccessToken(accessToken);
     setRefreshToken(refreshToken);
     setToken(accessToken);
+    setUser(user);
+    setRole(user.role);
+    localStorage.setItem("token", accessToken);
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
+    localStorage.setItem("role", user.role);
+    localStorage.setItem("user", JSON.stringify(user));
   };
 
 
@@ -41,6 +51,7 @@ const ShopContextProvider = ({ children }) => {
     token, accessToken, refreshToken,
     logout, setLoginToken,
     role, setRole,
+    user,
     navigate
   };
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;

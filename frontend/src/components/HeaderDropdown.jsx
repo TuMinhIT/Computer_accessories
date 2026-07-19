@@ -2,7 +2,8 @@ import { useContext } from "react";
 import { Link } from "react-router";
 import { ShopContext } from "../context/ShopContext";
 const HeaderDropdown = () => {
-  const { setToken } = useContext(ShopContext);
+  const { logout, user } = useContext(ShopContext);
+
   return (
     <div className="absolute right-0 top-full mt-2 z-50 ">
       <div className="bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-48 border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
@@ -55,9 +56,10 @@ const HeaderDropdown = () => {
               Settings
             </Link>
           </li>
-          <li>
+
+          {user && user.role === "admin" && <li>
             <Link
-              href="#"
+              to="/admin"
               className="flex items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
             >
               <svg
@@ -73,14 +75,14 @@ const HeaderDropdown = () => {
                   d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
                 />
               </svg>
-              Earnings
+              Admin
             </Link>
           </li>
+          }
         </ul>
         <div className="py-1">
           <Link
-            onClick={() => setToken("")}
-            to={"/login"}
+            onClick={() => logout()}
             className="flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-gray-600 transition-colors duration-200"
           >
             <svg

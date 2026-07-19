@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { assets } from "../assets/assets";
+
+import { assets } from "../../../src/assets/assets";
 import { Link } from "react-router-dom";
 const Header = ({ toggleSidebar }) => {
   return (

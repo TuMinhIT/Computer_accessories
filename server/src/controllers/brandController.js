@@ -1,8 +1,11 @@
-import Brands from "../models/BrandModel.js";
 import { v2 as cloudinary } from "cloudinary";
+import { BrandService } from "../services/brand.service.js";
+
+const brandService = new BrandService();
+
 export const getBrands = async (req, res) => {
   try {
-    const brands = await Brands.find();
+    const brands = await brandService.getBrands();
     res.send({
       success: true,
       data: brands.reverse(),

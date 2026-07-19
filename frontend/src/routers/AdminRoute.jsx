@@ -3,13 +3,17 @@ import { Navigate, Outlet } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 
 const AdminRoute = () => {
-  const { token } = useContext(ShopContext);
+  const { user } = useContext(ShopContext);
 
-  if (!token || token.trim() === "") {
-    return <Navigate to="/login" replace />;
-  }
+  // if (user === null) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
-  return <Outlet />; // render tất cả route con bên trong
+  // if (user?.role !== "admin") {
+  //   return <Navigate to="/" replace />;
+  // }
+
+  return <Outlet />;
 };
 
 export default AdminRoute;

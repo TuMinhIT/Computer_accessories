@@ -2,6 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import userRoutes from "./routers/userRoutes.js";
+import brandRoutes from "./routers/brandRoutes.js";
+import categoryRoutes from "./routers/categoryRoutes.js";
+
 import notFound from "./middleware/notFound.js"
 import errorHandler from "./middleware/errorHandler.middleware.js"
 dotenv.config();
@@ -26,9 +29,8 @@ app.get("/", (req, res) => {
 // app.use("/api/uploads", uploadRoutes);
 // app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-// app.use("/api/plants", plantRoutes);
-// app.use("/api/process", processRouter);
-
+app.use("/api/brands", brandRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // global error handler
 app.use(notFound);

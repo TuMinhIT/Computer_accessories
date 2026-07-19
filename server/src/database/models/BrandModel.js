@@ -9,7 +9,7 @@ const BrandsSchema = new mongoose.Schema({
   image: {
     type: String,
     default: "",
-    required: true,
+    required: false,
     trim: true,
   },
 });

@@ -1,24 +1,25 @@
 import { useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { ShopContext } from "../context/ShopContext";
-export const categoriesService = () => {
-  const { backendUrl } = useContext(ShopContext);
+import { httpClient } from "../../services/httpClient";
+export const CategoryService = () => {
+  const resource = "/api/categories";
 
   const getAllCategories = async () => {
     try {
-      const res = await axios.get(backendUrl + "/api/categories");
+      const res = await httpClient.get(resource);
+      console.log(res.data);
       if (!res.data.success) {
-        toast.error(res.data.message);
-        return null;
+        throw new Error(res.data.message || "Unknown error");
       }
       return res.data.data;
     } catch (err) {
-      toast.error("Failed to fetch categories: " + (err.message || ""));
+      toast.error("Failed to fetch data: " + (err.message || ""));
       console.error(err);
-      return null;
+      throw err;
     }
   };
+
 
   const createCategory = async (data) => {
     try {
@@ -52,5 +53,8 @@ export const categoriesService = () => {
     }
   };
 
-  return { getAllCategories, createCategory, deleteCategory, updateCategory };
+
+  return {
+    getAllCategories,
+  };
 };
