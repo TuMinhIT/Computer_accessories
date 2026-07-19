@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { ShopContext } from "./context/ShopContext";
+import { ShopContext } from "../context/ShopContext";
 
 const PrivateRoute = () => {
   const { token } = useContext(ShopContext);

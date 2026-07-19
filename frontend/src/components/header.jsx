@@ -11,29 +11,29 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const fetchAvatar = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setAvatarUrl(assets.user_img);
-          return;
-        }
-        const res = await axios.get("http://localhost:5000/api/users/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+    // const fetchAvatar = async () => {
+    //   try {
+    //     const token = localStorage.getItem("token");
+    //     if (!token) {
+    //       setAvatarUrl(assets.user_img);
+    //       return;
+    //     }
+    //     const res = await axios.get("http://localhost:5000/api/users/profile", {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     });
 
-        if (res.data?.success) {
-          const url = res.data.data?.avatar;
-          setAvatarUrl(url && url.length > 0 ? url : assets.user_img);
-        } else {
-          setAvatarUrl(assets.user_img);
-        }
-      } catch (err) {
-        setAvatarUrl(assets.user_img);
-      }
-    };
+    //     if (res.data?.success) {
+    //       const url = res.data.data?.avatar;
+    //       setAvatarUrl(url && url.length > 0 ? url : assets.user_img);
+    //     } else {
+    //       setAvatarUrl(assets.user_img);
+    //     }
+    //   } catch (err) {
+    //     setAvatarUrl(assets.user_img);
+    //   }
+    // };
 
-    fetchAvatar();
+    // fetchAvatar();
   }, []);
 
   useEffect(() => {

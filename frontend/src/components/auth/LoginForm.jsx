@@ -1,26 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-
-import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { UserService } from "../services/UserService";
-import Spinner from "./Spinner";
+import { UserService } from "../../services/UserService";
+import Spinner from "../Spinner";
+import { useContext } from "react";
+import { ShopContext } from "../../context/ShopContext";
+
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const { login } = UserService();
+  const { setRole, setLoginToken, token } = useContext(ShopContext)
+  const navigate = useNavigate()
 
   const useLogin = useMutation({
     mutationFn: login,
-    onSuccess: (res) => {},
+    onSuccess: (res) => {
+      setLoginToken(res.data.accessToken, res.data.refreshToken);
+      setRole(res.data.user.role);
+      toast.success("Login successfully!");
+      navigate("/home")
+    },
+    onError: (error) => {
+      console.error("Login failed:", error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || "An error occurred during login");
+    },
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     useLogin.mutate({ username, password });
   };
+
+  useEffect(() => {
+    if (token) {
+      navigate("/home")
+    }
+  }, [token])
 
   return (
     <>
@@ -30,7 +48,7 @@ const LoginForm = () => {
           alt="Modern phone retail store with POS system"
           className="object-cover w-full h-full brightness-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/80 to-indigo-500/40 flex items-center justify-center p-12">
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/80 to-indigo-500/40 flex items-center justify-center p-8">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -49,7 +67,7 @@ const LoginForm = () => {
       </div>
 
       {/* Right Form Section */}
-      <div className=" lg:w-1/2 p-12 md:p-20">
+      <div className=" lg:w-1/2 p-12 md:p-16">
         <motion.h1
           className="text-4xl font-extrabold text-indigo-700 mb-10 text-center lg:text-left"
           initial={{ opacity: 0, y: 20 }}
@@ -70,7 +88,7 @@ const LoginForm = () => {
               htmlFor="username"
               className="block text-base font-medium text-gray-800 mb-3"
             >
-              Username
+              Email
             </label>
             <input
               type="text"
@@ -150,9 +168,9 @@ const LoginForm = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          New employee?{" "}
-          <Link className="text-indigo-600 hover:underline font-medium">
-            Contact Admin for Account
+          Don't have an account?{" "}
+          <Link to="/register" className="text-indigo-600 hover:underline font-medium">
+            Register
           </Link>
         </motion.p>
       </div>

@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import userRoutes from "./routers/userRoutes.js";
+import notFound from "./middleware/notFound.js"
+import errorHandler from "./middleware/errorHandler.middleware.js"
 dotenv.config();
 const app = express();
 
@@ -29,7 +31,7 @@ app.use("/api/users", userRoutes);
 
 
 // global error handler
-// app.use(notFound);
-// app.use(errorHandler);
+app.use(notFound);
+app.use(errorHandler);
 
 export default app;

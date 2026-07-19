@@ -4,23 +4,45 @@ import { useNavigate } from "react-router-dom";
 export const ShopContext = createContext();
 
 const ShopContextProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [token, setToken] = useState(localStorage.getItem("accessToken") || "");
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || "");
+  const [refreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || "");
+  const [role, setRole] = useState(localStorage.getItem("role") || "");
   const navigate = useNavigate();
-  const backendUrl = import.meta.env.VITE_API_URL;
-  const currency = "$";
+
+
   useEffect(() => {
-    if (token === "") {
-      localStorage.removeItem("token");
+    if (token === "" || refreshToken === "") {
+      logout()
     }
-    localStorage.setItem("token", token);
-  }, [token]);
+  }, [token, accessToken, refreshToken]);
+
+
+
+  const logout = () => {
+    setToken("");
+    setRole("");
+    setAccessToken("");
+    setRefreshToken("");
+    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
+
+  const setLoginToken = async (accessToken, refreshToken) => {
+    setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
+    setToken(accessToken);
+  };
+
 
   const value = {
-    token,
-    setToken,
-    navigate,
-    backendUrl,
-    currency,
+    token, accessToken, refreshToken,
+    logout, setLoginToken,
+    role, setRole,
+    navigate
   };
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 };

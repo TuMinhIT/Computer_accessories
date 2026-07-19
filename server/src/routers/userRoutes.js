@@ -1,22 +1,21 @@
 import express from "express";
 import cors from "cors";
-import userController from "../controllers/userControllerOLD.js";
-import authUser from "../middleware/authUser.js";
-import upload from "../middleware/multer.js";
-import { checkAuth } from "../middleware/auth.js";
+import { RegisterUser, loginUser } from "../controllers/User.controller.js";
+import validate from "../middleware/validate.middleware.js";
+import { loginSchema, registerSchema } from "../schemas/user.schema.js";
 const router = express.Router();
-router.use(cors({ origin: "*" }));
 
-router.post("/register", userController.addUser);
-router.get("/activate/:token", checkAuth, userController.activateUser);
-router.post("/login", userController.loginUser);
-router.post("/change-password", userController.changeUserPassword);
-router.post("/forgot-password", userController.forgotPassword);
-router.post("/reset-password", userController.resetPassword);
+router.post("/register", validate(registerSchema), RegisterUser);
 
-router.get("/profile", authUser, userController.getProfile);
-router.put("/profile", authUser, upload.single("avatar"), userController.updateProfile);
+// router.get("/activate/:token", checkAuth, userController.activateUser);
+router.post("/login", validate(loginSchema), loginUser);
+// router.post("/change-password", userController.changeUserPassword);
+// router.post("/forgot-password", userController.forgotPassword);
+// router.post("/reset-password", userController.resetPassword);
 
-router.put("/:id", userController.updateUser);
+// router.get("/profile", authUser, userController.getProfile);
+// router.put("/profile", authUser, upload.single("avatar"), userController.updateProfile);
+
+// router.put("/:id", userController.updateUser);
 
 export default router;

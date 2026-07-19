@@ -1,44 +1,55 @@
-import axios from "axios";
 import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
+import { httpClient } from "./httpClient"
+
 export const UserService = () => {
-  const { backendUrl, token, setToken, navigate } = useContext(ShopContext);
+  const { setToken, navigate } = useContext(ShopContext);
 
   const resource = "/api/users/";
 
-  const login = async ({ username, password }) => {
+  const register = async ({ username, password }) => {
     try {
-      const res = await axios.post(backendUrl + resource + "login", {
+      const res = await httpClient.post(resource + "register", {
         username,
         password,
       });
 
       if (res.data.success) {
-        if (res.data.forceChangePassword) {
-          toast.warning(
-            "You must change your password before using the system"
-          );
-
-          navigate("/change-password", {
-            state: { username: username },
-          });
-        } else {
-          setToken(res.data.token);
-          navigate("/");
-        }
+        toast.success("Registration successful!");
+        navigate("/login");
         return res.data;
       } else {
-        toast.error(res.data.message || "Login failed");
+        toast.error(res.data.message || "Registration failed");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 
+
+  const login = async ({ username, password }) => {
+    try {
+      const res = await httpClient.post(resource + "login", {
+        email: username,
+        password,
+      });
+
+      if (res.data.success) {
+        return res.data;
+      } else {
+        toast.error(res.data.message || "Login failed");
+        return res.data;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+      return error;
+    }
+  };
+
   const changePassword = async ({ username, newPassword }) => {
     try {
-      const res = await axios.post(backendUrl + resource + `change-password`, {
+      const res = await httpClient.post(resource + `change-password`, {
         username,
         newPassword,
       });
@@ -52,26 +63,25 @@ export const UserService = () => {
         toast.error(res.data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Something went wrong");
+      console.log(err);
     }
   };
 
   const forgotPassword = async ({ email }) => {
     try {
-      const res = await axios.post(backendUrl + resource + "forgot-password", {
+      const res = await httpClient.post(resource + "forgot-password", {
         email,
       });
 
       return res.data;
     } catch (err) {
       console.log(err.message);
-      toast.error(err.message);
     }
   };
 
   const resetPassword = async ({ otpToken, otp, newPassword }) => {
     try {
-      const res = await axios.post(backendUrl + resource + "reset-password", {
+      const res = await httpClient.post(resource + "reset-password", {
         otpToken,
         otp,
         newPassword,
@@ -86,37 +96,30 @@ export const UserService = () => {
       }
     } catch (err) {
       console.log(err.message);
-      toast.error(err.message);
     }
   };
 
   const adminProfile = async () => {
-  try {
-    const res = await axios.get(backendUrl + resource + "profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!res.data.success) {
-      setToken("");
+    try {
+      const res = await httpClient.get(resource + "profile");
+      if (!res.data.success) {
+        setToken("");
+      }
+      return res.data;
+    } catch (err) {
+      throw err;
     }
-    return res.data;
-  } catch (err) {
-    toast.error("Failed: " + (err.response?.data?.message || err.message));
-    throw err;
-  }
-};
-
+  };
 
   const updateInfo = async ({ id, data }) => {
-    const res = await axios.put(backendUrl + resource + id, data, {
+    const res = await httpClient.put(resource + id, data, {
       headers: {
-        Authorization: `Bearer ${token}`, 
         "Content-Type": "multipart/form-data",
       },
     });
     return res.data;
   };
+
   return {
     updateInfo,
     login,
@@ -124,5 +127,6 @@ export const UserService = () => {
     adminProfile,
     forgotPassword,
     resetPassword,
+    register
   };
 };

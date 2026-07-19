@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/auth/LoginForm";
 
 function Login() {
   return (

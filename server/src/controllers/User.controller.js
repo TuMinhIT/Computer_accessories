@@ -1,20 +1,43 @@
-import UserService from "../services/ex.service.js";
+import { UserService } from "../services/user.service.js";
 import ApiResponse from "../utils/apiResponse.js";
+
 const service = new UserService();
 
-export const createUser = async (req, res) => {
+export const RegisterUser = async (req, res) => {
     const user = await service.createUser(req.body);
-
-    res.json(
-        new ApiResponse(true, 200, "", user)
-    );
+    user.password = "xxxxx"
+    return res.json(new ApiResponse({
+        success: true,
+        status: 201,
+        message: "User created successfully",
+        data: user
+    }));
 }
+
+export const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+    const result = await service.login(email, password);
+
+    return res.json(new ApiResponse({
+        success: true,
+        status: 200,
+        message: "User logged in successfully",
+        data: result
+    }));
+}
+
 
 export const getUsers = async (req, res) => {
     const users = await service.getUsers();
-
-    res.json(users);
+    return res.json(new ApiResponse({
+        data: users,
+        status: 200,
+        message: "Users fetched successfully",
+        success: true
+    }));
 }
+
+
 
 export const getUser = async (req, res) => {
     const user = await service.getUser(req.params.id);
