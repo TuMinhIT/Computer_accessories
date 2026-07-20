@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { assets } from "../src/assets/assets";
+import { assets } from "../../assets/assets";
 const Search = ({ search, setSearch, handleSearch }) => {
   return (
     <div className="flex w-1/3 min-w-86 items-center justify-center border border-gray-700  rounded-full ">

@@ -4,6 +4,10 @@ import cors from "cors";
 import userRoutes from "./routers/userRoutes.js";
 import brandRoutes from "./routers/brandRoutes.js";
 import categoryRoutes from "./routers/categoryRoutes.js";
+import productRoutes from "./routers/productRoutes.js";
+import cartRoutes from "./routers/cartRoutes.js";
+import orderRoutes from "./routers/orderRoutes.js";
+import paymentRoutes from "./routers/paymentRoutes.js";
 
 import notFound from "./middleware/notFound.js"
 import errorHandler from "./middleware/errorHandler.middleware.js"
@@ -26,11 +30,13 @@ app.get("/", (req, res) => {
   res.json({ service: "Computer accessories server", status: "ok" });
 });
 
-// app.use("/api/uploads", uploadRoutes);
-// app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/brands", brandRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // global error handler
 app.use(notFound);

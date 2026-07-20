@@ -3,15 +3,14 @@ import { Navigate, Outlet } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 
 const AdminRoute = () => {
-  const { user } = useContext(ShopContext);
+  const { user, role } = useContext(ShopContext);
+  if (user === null) {
+    return <Navigate to="/login" replace />;
+  }
 
-  // if (user === null) {
-  //   return <Navigate to="/login" replace />;
-  // }
-
-  // if (user?.role !== "admin") {
-  //   return <Navigate to="/" replace />;
-  // }
+  if (role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
 
   return <Outlet />;
 };

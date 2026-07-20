@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ImageForm from "./ImageForm";
 import { useQuery } from "@tanstack/react-query";
-import { categoriesService } from "../../services/categoriesService";
-import { brandsService } from "../../services/brandsService";
+import { categoriesService } from "../../../services/categoriesService";
+import { brandsService } from "../../../services/brandsService";
 
-import { productHooks } from "../../hooks/productHooks";
+import { productHooks } from "../../../hooks/productHooks";
 import Spinner from "../Spinner";
 
 const EditProduct = ({ product, setShowEditModal }) => {

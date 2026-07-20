@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ProductAPI } from "../api/ProductAPI";
+import ProductService from "../../services/ProductService";
 
 export const productHooks = () => {
-  const { getProducts, createProduct, updateProduct, deleteProduct } =
-    ProductAPI();
+  const { getAllProducts, createProduct, updateProduct, deleteProduct } =
+    ProductService();
   const queryClient = useQueryClient();
 
   const useProducts = () => {
     return useQuery({
       queryKey: ["products"],
-      queryFn: () => getProducts(),
+      queryFn: () => getAllProducts(),
       staleTime: 1000 * 60 * 5,
     });
   };

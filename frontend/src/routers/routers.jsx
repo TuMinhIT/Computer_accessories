@@ -27,12 +27,34 @@ import AdminLayout from "../layout/AdminLayout";
 import UserLayout from "../layout/UserLayout";
 import AdminRoute from "./AdminRoute";
 import OverView from "../admin/pages/OverView";
+// import ProductsAdmin from "../admin/pages/ProductsAdmin";
+// import Orders from "../admin/pages/Orders";
+// import Customers from "../admin/pages/Customers";
+// import CategoriesAndBrand from "../admin/pages/CategoriesAndBrand";
+// import ChatAdminPage from "../admin/pages/ChatAdminPage";
 
 const Routers = () => {
   return (
     <Routes>
+
+      {/* Các route của Admin */}
+      <Route element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<OverView />} />
+
+          {/* <Route path="products" element={<ProductsAdmin />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="categories" element={<CategoriesAndBrand />} />
+          <Route path="profile" element={<ProfileManager />} />
+          <Route path="chat" element={<ChatAdminPage />} /> */}
+        </Route>
+      </Route>
+
+
       {/* Các route của User (Khách) */}
       <Route element={<UserLayout />}>
+
         {/* Public */}
 
         <Route path="/login" element={<Login />} />
@@ -40,7 +62,6 @@ const Routers = () => {
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -60,19 +81,9 @@ const Routers = () => {
         </Route>
       </Route>
 
-      {/* Các route của Admin */}
-      <Route element={<AdminRoute />}>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<OverView />} />
-          {/* <Route path="employees" element={<Employees />} />
-          <Route path="products" element={<Products />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="customers" element={<Customers />} />
-          <Route path="categories" element={<CategoriesAndBrand />} />
-          <Route path="profile" element={<ProfileManager />} />
-          <Route path="chat" element={<ChatAdminPage />} /> */}
-        </Route>
-      </Route>
+
+
+
     </Routes>
   );
 };

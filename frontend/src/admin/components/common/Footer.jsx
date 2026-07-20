@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { assets } from "../../../src/assets/assets";
+import { assets } from "../../../assets/assets";
 const Footer = () => {
   return (
     <div>

@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import { BrandService } from "../services/brand.service.js";
+import Brands from "../database/models/BrandModel.js";
 
 const brandService = new BrandService();
 

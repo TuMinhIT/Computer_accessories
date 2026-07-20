@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router";
 import { ShopContext } from "../context/ShopContext";
 const HeaderDropdown = () => {
-  const { logout, user } = useContext(ShopContext);
+  const { logout, user, role } = useContext(ShopContext);
 
   return (
     <div className="absolute right-0 top-full mt-2 z-50 ">
@@ -57,9 +57,9 @@ const HeaderDropdown = () => {
             </Link>
           </li>
 
-          {user && user.role === "admin" && <li>
+          {role === "admin" && <li>
             <Link
-              to="/admin"
+              to={"/admin"}
               className="flex items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-200"
             >
               <svg

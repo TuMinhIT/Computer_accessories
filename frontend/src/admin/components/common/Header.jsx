@@ -1,6 +1,8 @@
 
-import { assets } from "../../../src/assets/assets";
+import { assets } from "../../../assets/assets";
 import { Link } from "react-router-dom";
+import { AiOutlineMenu, AiOutlineUser } from "react-icons/ai";
+
 const Header = ({ toggleSidebar }) => {
   return (
     <>
@@ -8,7 +10,8 @@ const Header = ({ toggleSidebar }) => {
         <div className="flex flex-row items-center justify-between px-5 lg:px-15 py-5">
           <div className="block lg:hidden">
             <button onClick={toggleSidebar} className="p-2">
-              <img className="w-5 h-5" src={assets.density_medium} alt="Menu" />
+              <AiOutlineMenu />
+
             </button>
           </div>
           <div className="hidden items-center flex-row md:flex space-x-4">
@@ -20,9 +23,9 @@ const Header = ({ toggleSidebar }) => {
 
           <div className=" flex flex-row justify-between ">
             <div className=" flex flex-row items-center ">
-              <img className="w-5 h-5 mx-5" src={assets.sell} alt="" />
-              <Link to={"/profile"}>
-                <img className="w-10 h-10 " src={assets.user_img} alt="" />
+
+              <Link to={"/admin/profile"}>
+                <AiOutlineUser className="w-10 h-10" />
               </Link>
             </div>
           </div>

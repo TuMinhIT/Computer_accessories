@@ -1,11 +1,11 @@
 import { useState } from "react";
 import ActionButton from "./ActionButton";
-import { assets } from "../../assets/assets";
+import { assets } from "../../../assets/assets";
 
 import Spinner from "../Spinner";
 import { productHooks } from "../../hooks/productHooks";
 import { toast } from "react-toastify";
-import EditProduct from "./EditProduct";
+// import EditProduct from "./EditProduct";
 const ProductLine = ({ product }) => {
   const [index, setIndex] = useState(0);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -26,9 +26,9 @@ const ProductLine = ({ product }) => {
 
   return (
     <>
-      {showEditModal && (
+      {/* {showEditModal && (
         <EditProduct product={product} setShowEditModal={setShowEditModal} />
-      )}
+      )} */}
 
       <div className=" bg-white border border-gray-200 rounded-xl shadow-sm w-full group hover:shadow-lg hover:border-gray-400 transition-all duration-200  mb-3">
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-2 sm:gap-4 items-center px-2 sm:px-4 py-3">

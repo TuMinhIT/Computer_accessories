@@ -1,14 +1,14 @@
-import { useContext } from "react";
+
 import axios from "axios";
 import { toast } from "react-toastify";
-import { httpClient } from "../../services/httpClient";
+import { httpClient } from "../services/httpClient";
 export const CategoryService = () => {
   const resource = "/api/categories";
 
   const getAllCategories = async () => {
     try {
       const res = await httpClient.get(resource);
-      console.log(res.data);
+
       if (!res.data.success) {
         throw new Error(res.data.message || "Unknown error");
       }
@@ -56,5 +56,7 @@ export const CategoryService = () => {
 
   return {
     getAllCategories,
+    createCategory, updateCategory,
+    deleteCategory
   };
 };

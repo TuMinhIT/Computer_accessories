@@ -1,6 +1,6 @@
-// import Sidebar from "../components/Sidebar";
-import Footer from "../admin/components/Footer";
-import Header from "../admin/components/Header";
+import Sidebar from "../admin/components/common/Sidebar";
+import Footer from "../admin/components/common/Footer";
+import Header from "../admin/components/common/Header";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -14,8 +14,8 @@ const AdminLayout = () => {
       <Header toggleSidebar={toggleSidebar} />
       <div className="flex flex-1 min-h-0">
         {/* Sidebar desktop */}
-        <aside className="hidden lg:block w-64 bg-white border-r border-blue-100 shadow-lg rounded-r-2xl">
-          {/* <Sidebar /> */}
+        <aside className="hidden lg:block w-64 bg-white ">
+          <Sidebar />
         </aside>
 
         {sidebarOpen && (
@@ -25,7 +25,7 @@ const AdminLayout = () => {
               onClick={() => setSidebarOpen(false)}
             />
             <aside className="relative w-64 ">
-              {/* <Sidebar toggleSidebar={toggleSidebar} /> */}
+              <Sidebar toggleSidebar={toggleSidebar} />
             </aside>
           </div>
         )}

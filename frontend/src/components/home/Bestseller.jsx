@@ -6,7 +6,7 @@ import { ProductService } from "../../services/ProductService";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Spinner from "../Spinner";
-import { CategoryService } from "../../admin/components/CategoryService";
+import { CategoryService } from "../../services/CategoryService";
 const Bestseller = () => {
   const { getAllProducts, getProduct } = ProductService();
   const { getAllCategories } = CategoryService();

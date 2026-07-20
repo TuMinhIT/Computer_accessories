@@ -18,8 +18,6 @@ const ShopContextProvider = ({ children }) => {
     }
   }, [accessToken, refreshToken]);
 
-
-
   const logout = () => {
     setToken("");
     setRole("");

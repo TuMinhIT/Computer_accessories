@@ -1,19 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UserAPI } from "../api/UserAPI";
+import UserService from "../../services/UserService";
 
 export const UserHooks = () => {
   const queryClient = useQueryClient();
   const {
     getAllUsers,
     deleteUser,
-    updateInfo,
     updateUser,
     blockUser,
     createUser,
     adminLogin,
     adminProfile,
     resendActivation,
-  } = UserAPI();
+  } = UserService;
   const useUsers = () => {
     return useQuery({
       queryKey: ["users"],
@@ -33,7 +32,7 @@ export const UserHooks = () => {
   const useLogin = () => {
     return useMutation({
       mutationFn: adminLogin,
-      onSuccess: () => {},
+      onSuccess: () => { },
     });
   };
 

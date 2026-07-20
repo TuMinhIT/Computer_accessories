@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import Search from "../component/Search";
-import ProductLine from "../component/products/ProductLine";
-import AddProduct from "../component/products/AddProduct";
-import Spinner from "../component/Spinner";
+import Search from "../components/Search";
+import ProductLine from "../components/products/ProductLine";
+// import AddProduct from "../components/products/AddProduct";
+import Spinner from "../components/Spinner";
 import { productHooks } from "../hooks/productHooks";
-const Products = () => {
+const ProductsAdmin = () => {
   const { useProducts } = productHooks();
 
   const [searchResult, setSearchResult] = useState([]);
@@ -37,7 +37,7 @@ const Products = () => {
 
   return (
     <>
-      {showAddModal && <AddProduct setShowAddModal={setShowAddModal} />}
+      {/* {showAddModal && <AddProduct setShowAddModal={setShowAddModal} />} */}
 
       <div className="bg-white rounded-xl shadow-sm border ">
         <div className="p-6 border-b flex justify-between items-center">
@@ -88,4 +88,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default ProductsAdmin;
