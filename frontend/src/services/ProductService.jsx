@@ -1,14 +1,14 @@
 import { useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { ShopContext } from "../context/ShopContext";
+import { httpClient } from "./httpClient";
 
 export const ProductService = () => {
-  const { backendUrl } = useContext(ShopContext);
+  const resource = "/api/products"
 
   const getAllProducts = async () => {
     try {
-      const res = await axios.get(backendUrl + "/api/products");
+      const res = await httpClient.get(resource);
       if (res.data.success) {
         return res.data.data;
       } else {
@@ -38,7 +38,9 @@ export const ProductService = () => {
 
   const createProduct = async (data) => {
     try {
-      const res = await axios.post(backendUrl + "/api/products", data, {
+
+      console.log("goinj rôig")
+      const res = await httpClient.post(resource, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -52,7 +54,7 @@ export const ProductService = () => {
 
   const updateProduct = async (id, data) => {
     try {
-      const res = await axios.post(backendUrl + "/api/products", data, {
+      const res = await httpClient.put(resource + "/" + id, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -68,7 +70,7 @@ export const ProductService = () => {
 
   const deleteProduct = async (id) => {
     try {
-      const res = await axios.delete(backendUrl + "/api/products/" + id);
+      const res = await httpClient.delete(resource + "/" + id);
       return res.data;
     } catch (err) {
       toast.error("Failed to delete product: " + (err.message || ""));
@@ -78,3 +80,5 @@ export const ProductService = () => {
 
   return { getAllProducts, createProduct, updateProduct, deleteProduct, getProduct };
 };
+
+export default ProductService;

@@ -18,70 +18,61 @@ export const getAllProducts = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  try {
-    const {
-      name,
-      description,
-      barcode,
-      category,
-      brand,
-      price,
-      cost,
-      stock,
-      warrantyMonths,
-      bestseller,
-    } = req.body;
 
-    if (!req.files || req.files.length === 0) {
-      return res
-        .status(400)
-        .json({ success: false, message: "At least one image is required" });
-    }
 
-    const existProduct = await Product.findOne({ barcode });
-    if (existProduct) {
-      return res.status(200).send({
-        success: false,
-        message: "Barcode already exist!",
-      });
-    }
-    const uploadResults = await Promise.all(
-      req.files.map((file) =>
-        cloudinary.uploader.upload(file.path, {
-          resource_type: "image",
-          folder: "e-commerce/products",
-        })
-      )
-    );
+  const {
+    name,
+    description,
+    category,
+    brand,
+    price,
+    cost,
+    stock,
+    bestseller,
+  } = req.body;
 
-    const images = uploadResults.map((result) => result.secure_url);
-
-    const newProduct = new Product({
-      name,
-      description,
-      barcode,
-      category,
-      brand,
-      price,
-      cost,
-      stock,
-      warrantyMonths,
-      bestseller,
-      images,
-    });
-    const saved = await newProduct.save();
-
-    res.status(201).send({
-      success: true,
-      data: saved,
-    });
-  } catch (err) {
-    res.send({
-      success: false,
-      message: err.message,
-    });
-    console.log(err.message);
+  if (!req.files || req.files.length === 0) {
+    return res
+      .status(400)
+      .json({ success: false, message: "At least one image is required" });
   }
+
+  const existProduct = await Product.findOne({ name });
+  if (existProduct) {
+    return res.status(200).send({
+      success: false,
+      message: "name already exist!",
+    });
+  }
+  const uploadResults = await Promise.all(
+    req.files.map((file) =>
+      cloudinary.uploader.upload(file.path, {
+        resource_type: "image",
+      })
+    )
+  );
+
+
+  const images = uploadResults.map((result) => result.secure_url);
+
+  const newProduct = new Product({
+    name,
+    description,
+    category,
+    brand,
+    price,
+    cost,
+    stock,
+    bestseller,
+    images,
+  });
+  const saved = await newProduct.save();
+
+  res.status(201).send({
+    success: true,
+    data: saved,
+  });
+
 };
 
 export const updateProduct = async (req, res) => {
@@ -91,7 +82,7 @@ export const updateProduct = async (req, res) => {
     const {
       name,
       description,
-      barcode,
+
       category,
       brand,
       price,
@@ -116,7 +107,8 @@ export const updateProduct = async (req, res) => {
       {
         name,
         description,
-        barcode,
+
+
         category,
         brand,
         price,

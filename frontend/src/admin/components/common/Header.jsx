@@ -2,7 +2,7 @@
 import { assets } from "../../../assets/assets";
 import { Link } from "react-router-dom";
 import { AiOutlineMenu, AiOutlineUser } from "react-icons/ai";
-
+import { IoMdHome } from "react-icons/io";
 const Header = ({ toggleSidebar }) => {
   return (
     <>
@@ -24,8 +24,8 @@ const Header = ({ toggleSidebar }) => {
           <div className=" flex flex-row justify-between ">
             <div className=" flex flex-row items-center ">
 
-              <Link to={"/admin/profile"}>
-                <AiOutlineUser className="w-10 h-10" />
+              <Link to={"/home"}>
+                <IoMdHome className="w-8 h-8" />
               </Link>
             </div>
           </div>

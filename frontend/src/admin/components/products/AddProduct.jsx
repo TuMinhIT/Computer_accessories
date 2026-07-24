@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ImageForm from "./ImageForm";
 import { useQuery } from "@tanstack/react-query";
-import { categoriesService } from "../../services/categoriesService";
-import { brandsService } from "../../services/brandsService";
+import { CategoryService as categoriesService } from "@services/CategoryService";
+import { BrandService as brandsService } from "@services/BrandService";
 
-import { productHooks } from "../../hooks/productHooks";
-import Spinner from "../Spinner";
+import { productHooks } from "@/hooks/productHooks";
+import Spinner from "@components/Spinner";
 
 const AddProduct = ({ setShowAddModal }) => {
   const { getAllCategories } = categoriesService();
@@ -15,14 +15,12 @@ const AddProduct = ({ setShowAddModal }) => {
   const { getAllBrands } = brandsService();
   const [form, setForm] = useState({
     name: "",
-    barcode: "",
+    description: "",
     category: "",
     brand: "",
     price: "",
     cost: "",
     stock: "",
-    warrantyMonths: "",
-    description: "",
     bestseller: false,
     images: [],
   });
@@ -145,19 +143,7 @@ const AddProduct = ({ setShowAddModal }) => {
 
               {/* products code and name */}
               <div className="p-5 flex flex-col gap-3">
-                <div>
-                  <label className="font-bold" htmlFor="barcode">
-                    Barcode:
-                  </label>
-                  <input
-                    onChange={handleChange}
-                    required
-                    className="border-0 border-b border-b-gray-400 px-2 py-1 w-1/3 mx-3 focus:outline-none focus:border-b-blue-500 transition-all duration-200 rounded-none"
-                    type="text"
-                    name="barcode"
-                    id=""
-                  />
-                </div>
+
                 <div>
                   <label className="font-bold" htmlFor="barcode">
                     Product name:
@@ -295,23 +281,7 @@ const AddProduct = ({ setShowAddModal }) => {
                         placeholder="100"
                       />
                     </div>
-                    <div className="flex flex-col">
-                      <label
-                        className="mb-1 font-medium text-gray-700"
-                        htmlFor="warranty"
-                      >
-                        Warranty Months
-                      </label>
-                      <input
-                        onChange={handleChange}
-                        id="warranty"
-                        name="warrantyMonths"
-                        className="max-w-50 rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition w-full outline-none"
-                        type="number"
-                        required
-                        placeholder="13"
-                      />
-                    </div>
+
                     <div className="flex items-center gap-2 col-span-1 md:col-span-2 mt-2">
                       <input
                         onChange={handleChange}

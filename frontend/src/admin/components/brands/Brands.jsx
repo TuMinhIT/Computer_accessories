@@ -1,8 +1,8 @@
 import { useState } from "react";
 import BrandModel from "./BrandModel";
-import Spinner from "../Spinner";
+import Spinner from "@components/Spinner";
 import { toast } from "react-toastify";
-import { BrandHooks } from "../../hooks/brandHooks";
+import { BrandHooks } from "@/hooks/brandHooks";
 const Brands = () => {
   const [showBrandModal, setShowBrandModal] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -15,6 +15,7 @@ const Brands = () => {
   const handleDeleteBrand = async (id) => {
     mutate(id, {
       onSuccess: (res) => {
+
         if (res && res.success) {
           toast.success("Brand deleted!");
           refetch();
@@ -53,17 +54,19 @@ const Brands = () => {
             <th className="py-2">#</th>
             <th className="py-2">Name</th>
             <th className="py-2">Description</th>
+            <th className="py-2">Image</th>
             <th className="py-2">Action</th>
           </tr>
         </thead>
         <tbody>
-          {!brands || brands.length === 0 ? (
+          {!brands || brands.length == 0 ? (
             <tr>
-              <td colSpan="3" className="text-center text-gray-400 py-6">
-                There are no categories yet.
+              <td colSpan="4" className="text-center text-gray-400 py-6">
+                There are no brands yet.
               </td>
             </tr>
           ) : (
+
             brands.map((brand, idx) => (
               <tr key={brand._id} className="border-t hover:bg-gray-50 text-sm">
                 <td className="py-2 px-2">{idx + 1}</td>
@@ -71,11 +74,7 @@ const Brands = () => {
                   <div className="flex flex-col">
                     {brand.name}
 
-                    <img
-                      src={brand.image}
-                      alt="Preview"
-                      className="w-10 h-10 object-cover rounded-lg border"
-                    />
+
                   </div>
                 </td>
                 <td className="py-2">{brand.description}</td>

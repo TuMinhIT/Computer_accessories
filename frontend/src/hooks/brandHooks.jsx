@@ -1,15 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BrandAPI } from "../api/BrandAPI";
+import { BrandService } from "@/services/BrandService";
 
 export const BrandHooks = () => {
-  const { getAllBrand, deleteBrand, updateBrand, createBrand } = BrandAPI();
+  const { getAllBrands, deleteBrand, updateBrand, createBrand } = BrandService();
   const queryClient = useQueryClient();
 
   const useBrands = () => {
     return useQuery({
       queryKey: ["Brands"],
-      queryFn: () => getAllBrand(),
-      staleTime: 1000 * 60 * 5,
+      queryFn: () => getAllBrands(),
     });
   };
 

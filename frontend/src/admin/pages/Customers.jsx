@@ -1,29 +1,18 @@
-const customers = [
-  {
-    id: 1,
-    name: "Nguyen Van A",
-    email: "a@gmail.com",
-    phone: "0901234567",
-    totalOrders: 5,
-    totalSpent: 12000000,
-    joined: "2024-01-15",
-  },
-  {
-    id: 2,
-    name: "Tran Thi B",
-    email: "b@gmail.com",
-    phone: "0912345678",
-    totalOrders: 2,
-    totalSpent: 3500000,
-    joined: "2024-03-10",
-  },
-  // ...more mock data
-];
 
+
+import { UserHooks } from "@/hooks/userHoocks";
+import Spinner from "@components/Spinner";
 const Customers = () => {
+
+  const { useUsers } = UserHooks();
+  const { isPending, data: users, error } = useUsers();
+  console.log(users)
+
   return (
     <div className="p-8">
+      {isPending && <Spinner />}
       <h1 className="text-2xl font-bold mb-6">Customer Management</h1>
+      {error && <div className="text-red-500">{error.message}</div>}
       <div className="overflow-x-auto rounded-lg shadow border border-gray-200 bg-white">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -52,28 +41,28 @@ const Customers = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {customers.map((c, idx) => (
+            {users && users.map((c, idx) => (
               <tr key={c.id} className="hover:bg-gray-50 transition">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {idx + 1}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {c.name}
+                  {c.userName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                   {c.email}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                  {c.phone}
+                  {c.phoneNumber}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                  {c.totalOrders}
+                  {c.orderCount}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                  {c.totalSpent.toLocaleString()}
+                  {/* {c.totalSpent.toLocaleString()} */}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                  {c.joined}
+                  {c.createdAt}
                 </td>
               </tr>
             ))}

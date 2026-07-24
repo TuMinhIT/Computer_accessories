@@ -1,5 +1,5 @@
-import Categories from "../component/categories/Categories";
-import Brands from "../component/brands/Brands";
+import Categories from "@admin/components/categories/Categories";
+import Brands from "@admin/components/brands/Brands";
 
 export default function CategoryBrandManager() {
   return (

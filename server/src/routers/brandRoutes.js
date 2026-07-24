@@ -5,9 +5,8 @@ import upload from "../middleware/multer.js";
 const router = express.Router();
 
 router.get("/", getBrands);
-
-router.post("/", checkAccessToken, checkRole(['admin']), upload.single("image"), createBrand);
-router.put("/:id", checkAccessToken, checkRole(['admin']), upload.single("image"), updateBrand);
+router.post("/", checkAccessToken, checkRole(['admin']), createBrand);
+router.put("/:id", checkAccessToken, checkRole(['admin']), updateBrand);
 router.delete("/:id", checkAccessToken, checkRole(['admin']), deleteBrand);
 
 export default router;

@@ -26,12 +26,12 @@ import RegisterForm from "../components/auth/RegisterForm";
 import AdminLayout from "../layout/AdminLayout";
 import UserLayout from "../layout/UserLayout";
 import AdminRoute from "./AdminRoute";
-import OverView from "../admin/pages/OverView";
-// import ProductsAdmin from "../admin/pages/ProductsAdmin";
-// import Orders from "../admin/pages/Orders";
-// import Customers from "../admin/pages/Customers";
-// import CategoriesAndBrand from "../admin/pages/CategoriesAndBrand";
-// import ChatAdminPage from "../admin/pages/ChatAdminPage";
+import OverView from "@admin/pages/OverView";
+import ProductsAdmin from "@admin/pages/ProductsAdmin";
+import Orders from "@admin/pages/Orders";
+import Customers from "@admin/pages/Customers";
+import CategoriesAndBrand from "@admin/pages/CategoriesAndBrand";
+import ChatAdminPage from "@admin/pages/ChatAdminPage";
 
 const Routers = () => {
   return (
@@ -41,13 +41,12 @@ const Routers = () => {
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<OverView />} />
-
-          {/* <Route path="products" element={<ProductsAdmin />} />
+          <Route path="categories" element={<CategoriesAndBrand />} />
+          <Route path="products" element={<ProductsAdmin />} />
           <Route path="orders" element={<Orders />} />
           <Route path="customers" element={<Customers />} />
-          <Route path="categories" element={<CategoriesAndBrand />} />
           <Route path="profile" element={<ProfileManager />} />
-          <Route path="chat" element={<ChatAdminPage />} /> */}
+          <Route path="chat" element={<ChatAdminPage />} />
         </Route>
       </Route>
 

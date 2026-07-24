@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { UserHooks } from "../hooks/userHoocks";
+import { UserHooks } from "../../hooks/userHoocks";
 export default function ProfileManager() {
   const { useProfile } = UserHooks();
   const { mutate, isPending } = useProfile();
@@ -156,9 +156,8 @@ export default function ProfileManager() {
                     value={profile.fullName || ""}
                     onChange={handleChange("fullName")}
                     readOnly={!editing}
-                    className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${
-                      errors.fullName ? "border-red-400" : "border-gray-200"
-                    }`}
+                    className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${errors.fullName ? "border-red-400" : "border-gray-200"
+                      }`}
                   />
                   {errors.fullName && (
                     <p className="text-xs text-red-500 mt-1">
@@ -172,9 +171,8 @@ export default function ProfileManager() {
                     value={profile.username || ""}
                     onChange={handleChange("username")}
                     readOnly={!editing}
-                    className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${
-                      errors.email ? "border-red-400" : "border-gray-200"
-                    }`}
+                    className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${errors.email ? "border-red-400" : "border-gray-200"
+                      }`}
                   />
                   {errors.email && (
                     <p className="text-xs text-red-500 mt-1">{errors.email}</p>
@@ -187,9 +185,8 @@ export default function ProfileManager() {
                     value={profile.email || " "}
                     onChange={handleChange("email")}
                     readOnly={!editing}
-                    className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${
-                      errors.email ? "border-red-400" : "border-gray-200"
-                    }`}
+                    className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${errors.email ? "border-red-400" : "border-gray-200"
+                      }`}
                   />
                   {errors.email && (
                     <p className="text-xs text-red-500 mt-1">{errors.email}</p>
@@ -202,9 +199,8 @@ export default function ProfileManager() {
                     value={profile.phone || " "}
                     onChange={handleChange("phone")}
                     readOnly={!editing}
-                    className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${
-                      errors.phone ? "border-red-400" : "border-gray-200"
-                    }`}
+                    className={`mt-1 block w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 transition ${errors.phone ? "border-red-400" : "border-gray-200"
+                      }`}
                   />
                   {errors.phone && (
                     <p className="text-xs text-red-500 mt-1">{errors.phone}</p>

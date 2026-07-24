@@ -1,13 +1,12 @@
-import { useContext } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { ShopContext } from "../context/ShopContext";
+import { httpClient } from "./httpClient";
 export const BrandService = () => {
-  const { backendUrl } = useContext(ShopContext);
+
+  const resource = "/api/brands";
 
   const getAllBrands = async () => {
     try {
-      const res = await axios.get(backendUrl + "/api/brands");
+      const res = await httpClient.get(resource);
       if (!res.data.success) {
         toast.error(res.data.message);
         return null;
@@ -22,11 +21,7 @@ export const BrandService = () => {
 
   const createBrand = async (data) => {
     try {
-      const res = await axios.post(backendUrl + "/api/brands", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await httpClient.post(resource, data);
 
       if (!res.data.success) {
         toast.error(res.data.message);
@@ -40,13 +35,10 @@ export const BrandService = () => {
     }
   };
 
-  const updateBrand = async (_id, data) => {
+  const updateBrand = async ({ id, data }) => {
     try {
-      const res = await axios.put(backendUrl + `/api/brands/${_id}`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+
+      const res = await httpClient.put(`${resource}/${id}`, data);
       if (!res.data.success) {
         toast.error(res.data.message);
         return null;
@@ -60,7 +52,12 @@ export const BrandService = () => {
 
   const deleteBrand = async (id) => {
     try {
-      const res = await axios.delete(`${backendUrl}/api/brands/${id}`);
+      const res = await httpClient.delete(`${resource}/${id}`);
+
+      if (!res.data.success) {
+        toast.error(res.data.message);
+        return null;
+      }
       return res.data;
     } catch (err) {
       toast.error("Failed to delete brand: " + (err.message || ""));
@@ -71,3 +68,5 @@ export const BrandService = () => {
 
   return { getAllBrands, createBrand, updateBrand, deleteBrand };
 };
+
+export default BrandService

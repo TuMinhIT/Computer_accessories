@@ -29,10 +29,7 @@ export class UserService {
 
     async getUsers() {
 
-        const Users = await this.userRepository.find({ role: { $ne: "admin" } }).sort({
-            createdAt: -1,
-        });
-
+        const Users = await this.userRepository.findAll({ role: { $ne: "admin" } });
         return Users;
     }
 

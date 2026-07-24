@@ -1,4 +1,4 @@
-import { assets } from "../../assets/assets";
+import { assets } from "@assets/assets";
 import ImageUpload from "./ImageUpload";
 const ImageForm = ({ imagePreviews, maxImage, onChange, onRemove }) => {
   return (

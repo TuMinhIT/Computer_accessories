@@ -1,9 +1,9 @@
 import { useState } from "react";
 import ActionButton from "./ActionButton";
-import { assets } from "../../../assets/assets";
+import { assets } from "@assets/assets";
 
-import Spinner from "../Spinner";
-import { productHooks } from "../../hooks/productHooks";
+import Spinner from "@components/Spinner";
+import { productHooks } from "@/hooks/productHooks";
 import { toast } from "react-toastify";
 // import EditProduct from "./EditProduct";
 const ProductLine = ({ product }) => {

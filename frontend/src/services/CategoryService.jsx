@@ -2,6 +2,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { httpClient } from "../services/httpClient";
+
 export const CategoryService = () => {
   const resource = "/api/categories";
 
@@ -23,33 +24,47 @@ export const CategoryService = () => {
 
   const createCategory = async (data) => {
     try {
-      const res = await axios.post(backendUrl + "/api/categories/add", data);
+      const res = await httpClient.post(resource, data);
+
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Unknown error");
+      }
+
       return res.data;
     } catch (err) {
       toast.error("Failed to create category: " + (err.message || ""));
       console.error(err);
+      throw err;
     }
   };
 
-  const updateCategory = async (data) => {
+  const updateCategory = async ({ id, name, description }) => {
     try {
-      const res = await axios.put(backendUrl + "/api/categories/update", data);
+      const res = await httpClient.put(`${resource}/${id}`, { name, description });
+
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Unknown error");
+      }
       return res.data;
     } catch (err) {
       toast.error("Failed to update category: " + (err.message || ""));
       console.error(err);
+      throw err;
     }
   };
 
-  const deleteCategory = async (id) => {
+  const deleteCategory = async ({ id }) => {
     try {
-      const res = await axios.post(backendUrl + "/api/categories/delete", {
-        id,
-      });
+      const res = await httpClient.delete(resource + `/${id}`);
+
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Unknown error");
+      }
       return res.data;
     } catch (err) {
       toast.error("Failed to delete category: " + (err.message || ""));
       console.error(err);
+      throw err;
     }
   };
 
@@ -60,3 +75,5 @@ export const CategoryService = () => {
     deleteCategory
   };
 };
+
+export default CategoryService;

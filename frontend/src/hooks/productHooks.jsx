@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ProductService from "../../services/ProductService";
+import ProductService from "@services/ProductService";
 
 export const productHooks = () => {
   const { getAllProducts, createProduct, updateProduct, deleteProduct } =

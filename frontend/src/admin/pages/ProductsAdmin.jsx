@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Search from "../components/Search";
-import ProductLine from "../components/products/ProductLine";
-// import AddProduct from "../components/products/AddProduct";
-import Spinner from "../components/Spinner";
-import { productHooks } from "../hooks/productHooks";
+import Search from "@admin/components/common/Search";
+import ProductLine from "@admin/components/products/ProductLine";
+import AddProduct from "../components/products/AddProduct";
+import Spinner from "@components/Spinner";
+import { productHooks } from "@/hooks/productHooks";
 const ProductsAdmin = () => {
   const { useProducts } = productHooks();
 
@@ -37,7 +37,7 @@ const ProductsAdmin = () => {
 
   return (
     <>
-      {/* {showAddModal && <AddProduct setShowAddModal={setShowAddModal} />} */}
+      {showAddModal && <AddProduct setShowAddModal={setShowAddModal} />}
 
       <div className="bg-white rounded-xl shadow-sm border ">
         <div className="p-6 border-b flex justify-between items-center">

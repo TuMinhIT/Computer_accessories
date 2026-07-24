@@ -16,7 +16,7 @@ export class BrandService {
     }
 
     async getBrands() {
-        return await this.brandRepository.find();
+        return await this.brandRepository.findAll();
     }
 
     async getBrand(id) {

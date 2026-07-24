@@ -1,11 +1,33 @@
-import axios from "./axiosConfig";
+import { httpClient } from "./httpClient";
+import { toast } from "react-toastify";
 
-export const findOrCreateCustomer = async (data) => {
-  const res = await axios.post("/customers/find-or-create", data);
-  return res.data;
+export const customerService = () => {
+  const resource = "/customers";
+
+  const findOrCreateCustomer = async (data) => {
+    try {
+      const res = await httpClient.post(`${resource}/find-or-create`, data);
+      return res.data.data;
+    } catch (error) {
+      toast.error("Failed to create customer");
+      throw error;
+    }
+  };
+
+  const getCustomerOrders = async (customerId) => {
+    try {
+      const res = await httpClient.get(`${resource}/${customerId}/orders`);
+      return res.data.data;
+    } catch (error) {
+      toast.error("Failed to fetch customer orders");
+      throw error;
+    }
+  };
+
+  return {
+    findOrCreateCustomer,
+    getCustomerOrders,
+  };
 };
 
-export const getCustomerOrders = async (customerId) => {
-  const res = await axios.get(`/customers/${customerId}/orders`);
-  return res.data;
-};
+export default customerService;

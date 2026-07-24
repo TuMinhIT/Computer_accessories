@@ -107,7 +107,7 @@
 import { useContext, useState } from "react";
 import Footer from "../component/Footer";
 import { assets } from "../assets/assets";
-import { UserHooks } from "../hooks/userHoocks";
+import { UserHooks } from "../../hooks/userHoocks";
 import { ShopContext } from "../context/ShopContext";
 import { toast, ToastContainer } from "react-toastify";
 import Spinner from "../component/Spinner";

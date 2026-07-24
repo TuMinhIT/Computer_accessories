@@ -120,8 +120,24 @@ export const UserService = () => {
     return res.data;
   };
 
+  const getAllUsers = async () => {
+    try {
+      const res = await httpClient.get(resource);
+      return res.data.data;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const deleteUser = async (id) => {
+    const res = await httpClient.delete(resource + id);
+    return res.data;
+  };
+
   return {
     updateInfo,
+    getAllUsers,
+    deleteUser,
     login,
     changePassword,
     adminProfile,
@@ -130,3 +146,4 @@ export const UserService = () => {
     register
   };
 };
+export default UserService;

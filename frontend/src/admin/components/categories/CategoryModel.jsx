@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { categoryHooks } from "../../hooks/categoryHooks";
-import Spinner from "../Spinner";
+import { categoryHooks } from "@/hooks/categoryHooks";
+import Spinner from "@components/Spinner";
 const CategoryModel = ({ setShowCategoryModal, editing, category }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -10,10 +10,9 @@ const CategoryModel = ({ setShowCategoryModal, editing, category }) => {
   const {
     isPending: loadEdit,
     mutate: mutateEdit,
-    error: errorEdit,
   } = useUpdateCategory();
 
-  const { isPending, mutate, error } = useCreateCategory();
+  const { isPending, mutate } = useCreateCategory();
 
   useEffect(() => {
     if (category) {
@@ -26,15 +25,11 @@ const CategoryModel = ({ setShowCategoryModal, editing, category }) => {
     if (name.trim() === "") return;
 
     mutateEdit(
-      { id: category._id, data: { name, description } },
+      { id: category._id, name, description },
       {
         onSuccess: (res) => {
-          if (res && res.success) {
-            toast.success("Category updated!");
-            setShowCategoryModal(false);
-          } else {
-            toast.error(res?.message || "Update failed");
-          }
+          toast.success("Category updated!");
+          setShowCategoryModal(false);
         },
       }
     );
@@ -46,12 +41,8 @@ const CategoryModel = ({ setShowCategoryModal, editing, category }) => {
       { name, description },
       {
         onSuccess: (res) => {
-          if (res && res.success) {
-            toast.success("Category added!");
-            setShowCategoryModal(false);
-          } else {
-            toast.error(res?.message || "Add failed");
-          }
+          toast.success("Category added!");
+          setShowCategoryModal(false);
         },
       }
     );

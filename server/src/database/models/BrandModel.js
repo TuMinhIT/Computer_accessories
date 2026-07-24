@@ -6,12 +6,6 @@ const BrandsSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  image: {
-    type: String,
-    default: "",
-    required: false,
-    trim: true,
-  },
 });
 
 const Brands = mongoose.model("brands", BrandsSchema);

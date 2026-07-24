@@ -1,22 +1,20 @@
 import { useState } from "react";
-import { categoriesService } from "../../services/categoriesService";
 import CategoryModel from "./CategoryModel";
 import { toast } from "react-toastify";
-import { useQuery } from "@tanstack/react-query";
-import { categoryHooks } from "../../hooks/categoryHooks";
-import Spinner from "../Spinner";
+
+import { categoryHooks } from "@/hooks/categoryHooks";
+import Spinner from "@components/Spinner";
 
 const Categories = () => {
   const [editing, setEditing] = useState(false);
   const [category, setCategory] = useState(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
-  // const { getAllCategories, deleteCategory } = categoriesService();
   const { useCategories, useDeleteCategory } = categoryHooks();
 
   const { isLoading, data: categories, error } = useCategories();
   const { mutate, isPending } = useDeleteCategory();
   const handleDeleteCategory = async (id) => {
-    mutate(id, {
+    mutate({ id }, {
       onSuccess: (res) => {
         if (res && res.success) {
           toast.success("Category deleted!");

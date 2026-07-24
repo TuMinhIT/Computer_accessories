@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ImageForm from "./ImageForm";
 import { useQuery } from "@tanstack/react-query";
-import { categoriesService } from "../../../services/categoriesService";
-import { brandsService } from "../../../services/brandsService";
+import { CategoryService as categoriesService } from "@services/CategoryService";
+import { BrandService as brandsService } from "@services/BrandService";
 
-import { productHooks } from "../../../hooks/productHooks";
-import Spinner from "../Spinner";
+import { productHooks } from "@/hooks/productHooks";
+import Spinner from "@components/Spinner";
 
 const EditProduct = ({ product, setShowEditModal }) => {
   const { getAllCategories } = categoriesService();
